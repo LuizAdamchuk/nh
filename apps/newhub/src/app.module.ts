@@ -15,6 +15,7 @@ import { OrganizationModule } from "./organization/organization.module";
 import { WorkspaceModule } from "./workspace/workspace.module";
 import { QlikintegrationModule } from "./qlikIntegration/qlikintegration.module";
 import { UserConfigModule } from "./user-config/user-config.module";
+import { UserVerificationCodeModule } from "./user-verification-code/user-verification-code.module";
 
 @Module({
   controllers: [],
@@ -26,6 +27,7 @@ import { UserConfigModule } from "./user-config/user-config.module";
     WorkspaceModule,
     QlikintegrationModule,
     UserConfigModule,
+    UserVerificationCodeModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
