@@ -1,0 +1,112 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt             DateTime               @default(now())
+  email                 String?                @unique
+  firstName             String?
+  id                    String                 @id @default(cuid())
+  lastName              String?
+  password              String
+  roles                 Json
+  status                Boolean?
+  updatedAt             DateTime               @updatedAt
+  userConfigs           UserConfig[]
+  username              String                 @unique
+  usersWorkspaces       UsersWorkspace[]
+  userVerificationCodes UserVerificationCode[]
+}
+
+model Organization {
+  createdAt               DateTime                 @default(now())
+  domain                  String?
+  id                      String                   @id @default(cuid())
+  name                    String
+  organizationsWorkspaces OrganizationsWorkspace[]
+  owner                   String?
+  slug                    String                   @unique
+  updatedAt               DateTime                 @updatedAt
+}
+
+model Workspace {
+  createdAt               DateTime                 @default(now())
+  id                      String                   @id @default(cuid())
+  name                    String
+  organizationsWorkspaces OrganizationsWorkspace[]
+  qlikWorkspaces          QlikWorkspace[]
+  slug                    String
+  updatedAt               DateTime                 @updatedAt
+  usersWorkspaces         UsersWorkspace[]
+}
+
+model QlikIntegration {
+  alias                String?
+  createdAt            DateTime        @default(now())
+  domain               String
+  id                   String          @id @default(cuid())
+  issuer               Boolean?
+  keyId                String?
+  qlikId               String?
+  qlikTheme            String?
+  qlikWebIntegrationId String?
+  qlikWorkspaces       QlikWorkspace[]
+  updatedAt            DateTime        @updatedAt
+}
+
+model UserConfig {
+  alias     String?
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  language  String?
+  mode      String?
+  picture   String?
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model UserVerificationCode {
+  createdAt        DateTime @default(now())
+  expiresAt        DateTime
+  id               String   @id @default(cuid())
+  updatedAt        DateTime @updatedAt
+  user             User?    @relation(fields: [userId], references: [id])
+  userId           String?
+  verificationCode String
+}
+
+model OrganizationsWorkspace {
+  createdAt      DateTime      @default(now())
+  id             String        @id @default(cuid())
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  updatedAt      DateTime      @updatedAt
+  workspace      Workspace?    @relation(fields: [workspaceId], references: [id])
+  workspaceId    String?
+}
+
+model UsersWorkspace {
+  createdAt   DateTime   @default(now())
+  id          String     @id @default(cuid())
+  updatedAt   DateTime   @updatedAt
+  user        User?      @relation(fields: [userId], references: [id])
+  userId      String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  workspaceId String?
+}
+
+model QlikWorkspace {
+  createdAt       DateTime         @default(now())
+  id              String           @id @default(cuid())
+  qlikintegration QlikIntegration? @relation(fields: [qlikd], references: [id])
+  qlikd           String?
+  updatedAt       DateTime         @updatedAt
+  workspace       Workspace?       @relation(fields: [workspaceId], references: [id])
+  workspaceId     String?
+}
