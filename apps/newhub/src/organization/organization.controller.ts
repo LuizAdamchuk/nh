@@ -21,7 +21,7 @@ import { OrganizationService } from "./organization.service";
 import {
   OrganizationCreateInput,
   OrganizationFindManyArgs,
-  OrganzationWhereUniqueInput,
+  OrganizationWhereUniqueInput,
   OrganizationUpdateInput,
 } from "./dto";
 
@@ -56,7 +56,7 @@ export class OrganizationController {
   }
 
   @Get(":id")
-  findOne(@Param() params: OrganzationWhereUniqueInput) {
+  findOne(@Param() params: OrganizationWhereUniqueInput) {
     return this.organizationService.findOne({
       where: params,
       select: {
@@ -71,7 +71,7 @@ export class OrganizationController {
 
   @Patch(":id")
   update(
-    @Param() params: OrganzationWhereUniqueInput,
+    @Param() params: OrganizationWhereUniqueInput,
     @Body() data: OrganizationUpdateInput
   ) {
     return this.organizationService.update({

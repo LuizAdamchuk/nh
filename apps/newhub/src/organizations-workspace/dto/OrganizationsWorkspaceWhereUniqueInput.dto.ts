@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
 @InputType()
-class OrganizationWhereUniqueInput {
+class OrganizationsWorkspaceWhereUniqueInput {
   @ApiProperty({
     required: true,
     type: String,
@@ -13,4 +13,4 @@ class OrganizationWhereUniqueInput {
   id!: string;
 }
 
-export { OrganizationWhereUniqueInput as OrganizationWhereUniqueInput };
+export { OrganizationsWorkspaceWhereUniqueInput as OrganizationsWorkspaceWhereUniqueInput };
