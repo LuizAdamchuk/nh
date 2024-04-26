@@ -3,7 +3,7 @@ import { Credentials } from "./Credentials";
 import { PasswordService } from "./password.service";
 import { TokenService } from "./token.service";
 import { UserInfo } from "./UserInfo";
-import { UserService } from "../user/user.service";
+import { UserService } from "../modules/user/user.service";
 
 @Injectable()
 export class AuthService {

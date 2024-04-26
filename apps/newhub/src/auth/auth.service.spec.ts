@@ -4,7 +4,7 @@ import { Credentials } from "./Credentials";
 import { PasswordService } from "./password.service";
 import { TokenService } from "./token.service";
 import { VALID_ID } from "../tests/auth/constants";
-import { UserService } from "../user/user.service";
+import { UserService } from "../modules/user/user.service";
 
 const VALID_CREDENTIALS: Credentials = {
   username: "Valid User",

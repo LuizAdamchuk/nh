@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { UserModule } from "./user/user.module";
+import { UserModule } from "./modules/user/user.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -11,14 +11,14 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
 import { ACLModule } from "./auth/acl.module";
 import { AuthModule } from "./auth/auth.module";
-import { OrganizationModule } from "./organization/organization.module";
-import { WorkspaceModule } from "./workspace/workspace.module";
-import { QlikintegrationModule } from "./qlikIntegration/qlikintegration.module";
-import { UserConfigModule } from "./user-config/user-config.module";
-import { UserVerificationCodeModule } from "./user-verification-code/user-verification-code.module";
-import { OrganizationsWorkspaceModule } from "./organizations-workspace/organizations-workspace.module";
-import { UsersWorkspaceModule } from "./users-workspace/users-workspace.module";
-import { QlikWorkspaceModule } from "./qlik-workspace/qlik-workspace.module";
+import { OrganizationModule } from "./modules/organization/organization.module";
+import { WorkspaceModule } from "./modules/workspace/workspace.module";
+import { QlikintegrationModule } from "./modules/qlikIntegration/qlikintegration.module";
+import { UserConfigModule } from "./modules/user-config/user-config.module";
+import { UserVerificationCodeModule } from "./modules/user-verification-code/user-verification-code.module";
+import { OrganizationsWorkspaceModule } from "./modules/organizations-workspace/organizations-workspace.module";
+import { UsersWorkspaceModule } from "./modules/users-workspace/users-workspace.module";
+import { QlikWorkspaceModule } from "./modules/qlik-workspace/qlik-workspace.module";
 
 @Module({
   controllers: [],
