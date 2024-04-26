@@ -25,18 +25,18 @@ import {
   QlikIntegrationWhereUniqueInput,
 } from "./dto";
 
-@swagger.ApiTags("qlikintegration")
+@swagger.ApiTags("qlikIntegration")
 @swagger.ApiBearerAuth()
-@Controller("qlikintegration")
+@Controller("qlikIntegration")
 export class QlikIntegrationController {
   constructor(
-    protected readonly qlikintegrationService: QlikIntegrationService
+    protected readonly qlikIntegrationService: QlikIntegrationService
   ) {}
 
   @swagger.ApiCreatedResponse()
   @Post()
   create(@Body() createQlikIntegrationDto: QlikIntegrationCreateInput) {
-    return this.qlikintegrationService.create({
+    return this.qlikIntegrationService.create({
       data: createQlikIntegrationDto,
     });
   }
@@ -46,7 +46,7 @@ export class QlikIntegrationController {
   findAll(@Req() request: Request) {
     const args = plainToClass(QlikIntegrationFindManyArgs, request.query);
 
-    return this.qlikintegrationService.findAll({
+    return this.qlikIntegrationService.findAll({
       ...args,
       select: {
         id: true,
@@ -59,7 +59,7 @@ export class QlikIntegrationController {
 
   @Get(":id")
   findOne(@Param() params: QlikIntegrationWhereUniqueInput) {
-    return this.qlikintegrationService.findOne({
+    return this.qlikIntegrationService.findOne({
       where: params,
       select: {
         id: true,
@@ -75,7 +75,7 @@ export class QlikIntegrationController {
     @Param() params: QlikIntegrationWhereUniqueInput,
     @Body() data: QlikIntegrationUpdateInput
   ) {
-    return this.qlikintegrationService.update({
+    return this.qlikIntegrationService.update({
       where: params,
       data: data,
     });
@@ -83,6 +83,6 @@ export class QlikIntegrationController {
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.qlikintegrationService.remove(+id);
+    return this.qlikIntegrationService.remove(+id);
   }
 }
