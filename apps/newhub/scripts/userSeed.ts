@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
-import { Salt, parseSalt } from "../src/auth/password.service";
+import { Salt } from "../src/auth/password.service";
 
 export async function seedUser(bcryptSalt: Salt) {
   console.info("Seeding database...");
