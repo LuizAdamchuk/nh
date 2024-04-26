@@ -18,6 +18,7 @@ import { UserConfigModule } from "./user-config/user-config.module";
 import { UserVerificationCodeModule } from "./user-verification-code/user-verification-code.module";
 import { OrganizationsWorkspaceModule } from "./organizations-workspace/organizations-workspace.module";
 import { UsersWorkspaceModule } from "./users-workspace/users-workspace.module";
+import { QlikWorkspaceModule } from "./qlik-workspace/qlik-workspace.module";
 
 @Module({
   controllers: [],
@@ -32,6 +33,7 @@ import { UsersWorkspaceModule } from "./users-workspace/users-workspace.module";
     UserVerificationCodeModule,
     OrganizationsWorkspaceModule,
     UsersWorkspaceModule,
+    QlikWorkspaceModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
