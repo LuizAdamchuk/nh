@@ -13,7 +13,7 @@ import { ACLModule } from "./auth/acl.module";
 import { AuthModule } from "./auth/auth.module";
 import { OrganizationModule } from "./modules/organization/organization.module";
 import { WorkspaceModule } from "./modules/workspace/workspace.module";
-import { QlikintegrationModule } from "./modules/qlikIntegration/qlikintegration.module";
+import { QlikIntegrationModule } from "./modules/qlik-integration/qlik-integration.module";
 import { UserConfigModule } from "./modules/user-config/user-config.module";
 import { UserVerificationCodeModule } from "./modules/user-verification-code/user-verification-code.module";
 import { OrganizationsWorkspaceModule } from "./modules/organizations-workspace/organizations-workspace.module";
@@ -28,7 +28,7 @@ import { QlikWorkspaceModule } from "./modules/qlik-workspace/qlik-workspace.mod
     UserModule,
     OrganizationModule,
     WorkspaceModule,
-    QlikintegrationModule,
+    QlikIntegrationModule,
     UserConfigModule,
     UserVerificationCodeModule,
     OrganizationsWorkspaceModule,

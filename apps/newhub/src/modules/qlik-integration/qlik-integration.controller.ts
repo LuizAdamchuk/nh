@@ -17,7 +17,7 @@ import {
   Param,
   Delete,
 } from "@nestjs/common";
-import { QlikIntegrationService } from "./qlikintegration.service";
+import { QlikIntegrationService } from "./qlik-integration.service";
 import {
   QlikIntegrationCreateInput,
   QlikIntegrationFindManyArgs,

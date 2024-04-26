@@ -1,7 +1,7 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsOptional, IsEnum } from "class-validator";
-import { SortOrder } from "../../../util/SortOrder";
+import { SortOrder } from "src/util/SortOrder";
 
 @InputType({
   isAbstract: true,

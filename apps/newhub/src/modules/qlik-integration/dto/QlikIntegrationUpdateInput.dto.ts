@@ -1,9 +1,16 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional, IsBoolean } from "class-validator";
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  ValidateNested,
+} from "class-validator";
+import { QlikWorkspaceUpdateManyWithoutQlikIntegrationsInput } from "./QlikWorkspaceUpdateManyWithoutQlikIntegrationsInput.dto";
+import { Type } from "class-transformer";
 
 @InputType()
-class QlikIntegrationCreateInput {
+class QlikIntegrationUpdateInput {
   @ApiProperty({
     required: false,
     type: String,
@@ -16,12 +23,15 @@ class QlikIntegrationCreateInput {
   alias?: string | null;
 
   @ApiProperty({
-    required: true,
+    required: false,
     type: String,
   })
   @IsString()
-  @Field(() => String)
-  domain!: string;
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  domain?: string;
 
   @ApiProperty({
     required: false,
@@ -77,6 +87,18 @@ class QlikIntegrationCreateInput {
     nullable: true,
   })
   qlikWebIntegrationId?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => QlikWorkspaceUpdateManyWithoutQlikIntegrationsInput,
+  })
+  @ValidateNested()
+  @Type(() => QlikWorkspaceUpdateManyWithoutQlikIntegrationsInput)
+  @IsOptional()
+  @Field(() => QlikWorkspaceUpdateManyWithoutQlikIntegrationsInput, {
+    nullable: true,
+  })
+  qlikWorkspaces?: QlikWorkspaceUpdateManyWithoutQlikIntegrationsInput;
 }
 
-export { QlikIntegrationCreateInput as QlikIntegrationCreateInput };
+export { QlikIntegrationUpdateInput as QlikIntegrationUpdateInput };

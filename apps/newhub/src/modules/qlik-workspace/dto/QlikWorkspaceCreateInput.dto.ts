@@ -1,6 +1,6 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { QlikIntegrationWhereUniqueInput } from "../../qlikIntegration/dto";
+import { QlikIntegrationWhereUniqueInput } from "../../qlik-integration/dto";
 import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
 import { WorkspaceWhereUniqueInput } from "../../workspace/dto";

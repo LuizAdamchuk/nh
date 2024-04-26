@@ -4,3 +4,4 @@ export * from "./QlikWorkspaceWhereUniqueInput.dto";
 export * from "./QlikWorkspaceFindManyArgs.dto";
 export * from "./QlikWorkspaceOrderByInput.dto";
 export * from "./QlikWorkspaceUpdateInput.dto";
+export * from "./QlikWorkspaceListRelationFilter.dto";

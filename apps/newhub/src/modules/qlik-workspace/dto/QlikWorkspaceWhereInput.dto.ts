@@ -4,7 +4,7 @@ import { DateTimeFilter } from "../../../util/DateTimeFilter";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
 import { StringFilter } from "../../../util/StringFilter";
-import { QlikIntegrationWhereUniqueInput } from "../../qlikIntegration/dto";
+import { QlikIntegrationWhereUniqueInput } from "../../qlik-integration/dto";
 import { WorkspaceWhereUniqueInput } from "../../workspace/dto";
 
 @InputType()

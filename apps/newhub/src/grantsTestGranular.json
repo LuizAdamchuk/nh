@@ -1,0 +1,986 @@
+[
+  {
+    "role": "admin",
+    "resource": "User",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "User",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "User",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "User",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "User",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "User",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "User",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "User",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "User",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "User",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "User",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "User",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "User",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "User",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "User",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "User",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "User",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "User",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "User",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "User",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Organization",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Organization",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Organization",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "Organization",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Organization",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Organization",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Organization",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Organization",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Organization",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Organization",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Organization",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Organization",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Organization",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Organization",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Organization",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Organization",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "Organization",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Workspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Workspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Workspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "Workspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Workspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Workspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Workspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Workspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Workspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Workspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Workspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Workspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Workspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Workspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "Workspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "Workspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "Workspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikIntegration",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikIntegration",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikIntegration",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "QlikIntegration",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikIntegration",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikIntegration",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikIntegration",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikIntegration",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikIntegration",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikIntegration",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikIntegration",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikIntegration",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikIntegration",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikIntegration",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikIntegration",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikIntegration",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "QlikIntegration",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserConfig",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserConfig",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserConfig",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserConfig",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserConfig",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserConfig",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserConfig",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserConfig",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserConfig",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserConfig",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserConfig",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserConfig",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserConfig",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserConfig",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserConfig",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserConfig",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserConfig",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserConfig",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserConfig",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserConfig",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserVerificationCode",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserVerificationCode",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserVerificationCode",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserVerificationCode",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserVerificationCode",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserVerificationCode",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserVerificationCode",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserVerificationCode",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserVerificationCode",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserVerificationCode",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserVerificationCode",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserVerificationCode",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserVerificationCode",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserVerificationCode",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserVerificationCode",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserVerificationCode",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UserVerificationCode",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UserVerificationCode",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UserVerificationCode",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UserVerificationCode",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "OrganizationsWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "OrganizationsWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "OrganizationsWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "OrganizationsWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "OrganizationsWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "OrganizationsWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "OrganizationsWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "OrganizationsWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "OrganizationsWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "OrganizationsWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UsersWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UsersWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UsersWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UsersWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UsersWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UsersWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UsersWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UsersWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UsersWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UsersWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UsersWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UsersWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UsersWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UsersWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UsersWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UsersWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "UsersWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "UsersWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "UsersWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "UsersWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "QlikWorkspace",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikWorkspace",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikWorkspace",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikWorkspace",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "editor",
+    "resource": "QlikWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "QlikWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "owner",
+    "resource": "QlikWorkspace",
+    "action": "read:any",
+    "attributes": "*"
+  }
+]

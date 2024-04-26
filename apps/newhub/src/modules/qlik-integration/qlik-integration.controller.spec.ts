@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { QlikIntegrationController } from "./qlikintegration.controller";
-import { QlikIntegrationService } from "./qlikintegration.service";
+import { QlikIntegrationController } from "./qlik-integration.controller";
+import { QlikIntegrationService } from "./qlik-integration.service";
 
 describe("QlikintegrationController", () => {
   let controller: QlikIntegrationController;

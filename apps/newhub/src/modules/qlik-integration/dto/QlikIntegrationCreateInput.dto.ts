@@ -6,10 +6,11 @@ import {
   IsBoolean,
   ValidateNested,
 } from "class-validator";
+import { QlikWorkspaceCreateNestedManyWithoutQlikIntegrationsInput } from "./QlikWorkspaceCreateNestedManyWithoutQlikIntegrationsInput.dto";
 import { Type } from "class-transformer";
 
 @InputType()
-class QlikIntegrationUpdateInput {
+class QlikIntegrationCreateInput {
   @ApiProperty({
     required: false,
     type: String,
@@ -22,15 +23,12 @@ class QlikIntegrationUpdateInput {
   alias?: string | null;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: String,
   })
   @IsString()
-  @IsOptional()
-  @Field(() => String, {
-    nullable: true,
-  })
-  domain?: string;
+  @Field(() => String)
+  domain!: string;
 
   @ApiProperty({
     required: false,
@@ -86,6 +84,18 @@ class QlikIntegrationUpdateInput {
     nullable: true,
   })
   qlikWebIntegrationId?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => QlikWorkspaceCreateNestedManyWithoutQlikIntegrationsInput,
+  })
+  @ValidateNested()
+  @Type(() => QlikWorkspaceCreateNestedManyWithoutQlikIntegrationsInput)
+  @IsOptional()
+  @Field(() => QlikWorkspaceCreateNestedManyWithoutQlikIntegrationsInput, {
+    nullable: true,
+  })
+  qlikWorkspaces?: QlikWorkspaceCreateNestedManyWithoutQlikIntegrationsInput;
 }
 
-export { QlikIntegrationUpdateInput as QlikIntegrationUpdateInput };
+export { QlikIntegrationCreateInput as QlikIntegrationCreateInput };
