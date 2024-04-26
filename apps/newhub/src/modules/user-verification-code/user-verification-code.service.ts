@@ -1,45 +1,63 @@
-import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+
 import {
   Prisma,
   UserVerificationCode as PrismaUserVerificationCode,
+  User as PrismaUser,
 } from "@prisma/client";
 
-import { PrismaService } from "src/prisma/prisma.service";
-
-@Injectable()
 export class UserVerificationCodeService {
   constructor(protected readonly prisma: PrismaService) {}
 
-  create(
-    args: Prisma.UserVerificationCodeCreateArgs
-  ): Promise<PrismaUserVerificationCode> {
-    return this.prisma.userVerificationCode.create({ ...args });
+  async count(
+    args: Omit<Prisma.UserVerificationCodeCountArgs, "select">
+  ): Promise<number> {
+    return this.prisma.userVerificationCode.count(args);
   }
 
-  findAll(
-    args: Prisma.UserVerificationCodeFindManyArgs
+  async userVerificationCodes<
+    T extends Prisma.UserVerificationCodeFindManyArgs
+  >(
+    args: Prisma.SelectSubset<T, Prisma.UserVerificationCodeFindManyArgs>
   ): Promise<PrismaUserVerificationCode[]> {
     return this.prisma.userVerificationCode.findMany<Prisma.UserVerificationCodeFindManyArgs>(
       args
     );
   }
-
-  findOne(args: Prisma.UserVerificationCodeFindUniqueArgs) {
+  async userVerificationCode<
+    T extends Prisma.UserVerificationCodeFindUniqueArgs
+  >(
+    args: Prisma.SelectSubset<T, Prisma.UserVerificationCodeFindUniqueArgs>
+  ): Promise<PrismaUserVerificationCode | null> {
     return this.prisma.userVerificationCode.findUnique(args);
   }
-
-  update(
-    args: Prisma.UserVerificationCodeUpdateArgs
+  async createUserVerificationCode<
+    T extends Prisma.UserVerificationCodeCreateArgs
+  >(
+    args: Prisma.SelectSubset<T, Prisma.UserVerificationCodeCreateArgs>
   ): Promise<PrismaUserVerificationCode> {
-    return this.prisma.userVerificationCode.update({
-      ...args,
-      data: {
-        ...args.data,
-      },
-    });
+    return this.prisma.userVerificationCode.create<T>(args);
+  }
+  async updateUserVerificationCode<
+    T extends Prisma.UserVerificationCodeUpdateArgs
+  >(
+    args: Prisma.SelectSubset<T, Prisma.UserVerificationCodeUpdateArgs>
+  ): Promise<PrismaUserVerificationCode> {
+    return this.prisma.userVerificationCode.update<T>(args);
+  }
+  async deleteUserVerificationCode<
+    T extends Prisma.UserVerificationCodeDeleteArgs
+  >(
+    args: Prisma.SelectSubset<T, Prisma.UserVerificationCodeDeleteArgs>
+  ): Promise<PrismaUserVerificationCode> {
+    return this.prisma.userVerificationCode.delete(args);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userVerificationCode`;
+  async getUser(parentId: string): Promise<PrismaUser | null> {
+    return this.prisma.userVerificationCode
+      .findUnique({
+        where: { id: parentId },
+      })
+      .user();
   }
 }

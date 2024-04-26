@@ -5,3 +5,4 @@ export * from "./QlikWorkspaceFindManyArgs.dto";
 export * from "./QlikWorkspaceOrderByInput.dto";
 export * from "./QlikWorkspaceUpdateInput.dto";
 export * from "./QlikWorkspaceListRelationFilter.dto";
+export * from "./QlikWorkspace.dto";

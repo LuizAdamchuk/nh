@@ -4,3 +4,4 @@ export * from "./OrganizationsWorkspaceWhereUniqueInput.dto";
 export * from "./OrganizationsWorkspaceFindManyArgs.dto";
 export * from "./OrganizationsWorkspaceOrderByInput.dto";
 export * from "./OrganizationsWorkspaceUpdateInput.dto";
+export * from "./OrganizationsWorkspace.dto";

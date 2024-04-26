@@ -1,34 +1,50 @@
-import { Injectable } from "@nestjs/common";
-import { Prisma, UserConfig as PrismaUserConfig } from "@prisma/client";
+import { PrismaService } from "../../prisma/prisma.service";
+import {
+  Prisma,
+  UserConfig as PrismaUserConfig,
+  User as PrismaUser,
+} from "@prisma/client";
 
-import { PrismaService } from "src/prisma/prisma.service";
-
-@Injectable()
 export class UserConfigService {
   constructor(protected readonly prisma: PrismaService) {}
 
-  create(args: Prisma.UserConfigCreateArgs): Promise<PrismaUserConfig> {
-    return this.prisma.userConfig.create({ ...args });
+  async count(
+    args: Omit<Prisma.UserConfigCountArgs, "select">
+  ): Promise<number> {
+    return this.prisma.userConfig.count(args);
   }
 
-  findAll(args: Prisma.UserConfigFindManyArgs): Promise<PrismaUserConfig[]> {
+  async userConfigs<T extends Prisma.UserConfigFindManyArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserConfigFindManyArgs>
+  ): Promise<PrismaUserConfig[]> {
     return this.prisma.userConfig.findMany<Prisma.UserConfigFindManyArgs>(args);
   }
-
-  findOne(args: Prisma.UserConfigFindUniqueArgs) {
+  async userConfig<T extends Prisma.UserConfigFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserConfigFindUniqueArgs>
+  ): Promise<PrismaUserConfig | null> {
     return this.prisma.userConfig.findUnique(args);
   }
-
-  update(args: Prisma.UserConfigUpdateArgs): Promise<PrismaUserConfig> {
-    return this.prisma.userConfig.update({
-      ...args,
-      data: {
-        ...args.data,
-      },
-    });
+  async createUserConfig<T extends Prisma.UserConfigCreateArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserConfigCreateArgs>
+  ): Promise<PrismaUserConfig> {
+    return this.prisma.userConfig.create<T>(args);
+  }
+  async updateUserConfig<T extends Prisma.UserConfigUpdateArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserConfigUpdateArgs>
+  ): Promise<PrismaUserConfig> {
+    return this.prisma.userConfig.update<T>(args);
+  }
+  async deleteUserConfig<T extends Prisma.UserConfigDeleteArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UserConfigDeleteArgs>
+  ): Promise<PrismaUserConfig> {
+    return this.prisma.userConfig.delete(args);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userConfig`;
+  async getUser(parentId: string): Promise<PrismaUser | null> {
+    return this.prisma.userConfig
+      .findUnique({
+        where: { id: parentId },
+      })
+      .user();
   }
 }

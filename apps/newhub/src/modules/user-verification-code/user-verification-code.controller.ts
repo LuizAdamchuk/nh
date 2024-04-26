@@ -1,91 +1,207 @@
+import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import { isRecordNotFoundError } from "../../prisma.util";
+import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
-
+import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
 import * as nestAccessControl from "nest-access-control";
 import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
-
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
 import { UserVerificationCodeService } from "./user-verification-code.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import {
   UserVerificationCodeCreateInput,
+  UserVerificationCode,
   UserVerificationCodeFindManyArgs,
-  UserVerificationCodeUpdateInput,
   UserVerificationCodeWhereUniqueInput,
+  UserVerificationCodeUpdateInput,
 } from "./dto";
 
 @swagger.ApiTags("userVerificationCode")
 @swagger.ApiBearerAuth()
-@Controller("userVerificationCode")
+@common.Controller("userVerificationCode")
 export class UserVerificationCodeController {
-  constructor(
-    protected readonly userVerificationCodeService: UserVerificationCodeService
-  ) {}
-
-  @swagger.ApiCreatedResponse()
-  @Post()
-  create(@Body() data: UserVerificationCodeCreateInput) {
-    return this.userVerificationCodeService.create({
+  constructor(protected readonly service: UserVerificationCodeService) {}
+  @common.Post()
+  @swagger.ApiCreatedResponse({ type: UserVerificationCode })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async createUserVerificationCode(
+    @common.Body() data: UserVerificationCodeCreateInput
+  ): Promise<UserVerificationCode> {
+    return await this.service.createUserVerificationCode({
       data: {
         ...data,
 
-        user: data.user ? { connect: data.user } : undefined,
+        user: data.user
+          ? {
+              connect: data.user,
+            }
+          : undefined,
+      },
+      select: {
+        createdAt: true,
+        expiresAt: true,
+        id: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+
+        verificationCode: true,
       },
     });
   }
 
+  @common.Get()
+  @swagger.ApiOkResponse({ type: [UserVerificationCode] })
   @ApiNestedQuery(UserVerificationCodeFindManyArgs)
-  @Get()
-  findAll(@Req() request: Request) {
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async userVerificationCodes(
+    @common.Req() request: Request
+  ): Promise<UserVerificationCode[]> {
     const args = plainToClass(UserVerificationCodeFindManyArgs, request.query);
-
-    return this.userVerificationCodeService.findAll({
+    return this.service.userVerificationCodes({
       ...args,
       select: {
+        createdAt: true,
+        expiresAt: true,
         id: true,
-        user: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+
+        verificationCode: true,
       },
     });
   }
 
-  @Get(":id")
-  findOne(@Param() params: UserVerificationCodeWhereUniqueInput) {
-    return this.userVerificationCodeService.findOne({
+  @common.Get("/:id")
+  @swagger.ApiOkResponse({ type: UserVerificationCode })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async userVerificationCode(
+    @common.Param() params: UserVerificationCodeWhereUniqueInput
+  ): Promise<UserVerificationCode | null> {
+    const result = await this.service.userVerificationCode({
       where: params,
       select: {
+        createdAt: true,
+        expiresAt: true,
         id: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+
+        verificationCode: true,
       },
     });
+    if (result === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return result;
   }
 
-  @Patch(":id")
-  update(
-    @Param() params: UserVerificationCodeWhereUniqueInput,
-    @Body() data: UserVerificationCodeUpdateInput
-  ) {
-    return this.userVerificationCodeService.update({
-      where: params,
-      data: {
-        ...data,
+  @common.Patch("/:id")
+  @swagger.ApiOkResponse({ type: UserVerificationCode })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async updateUserVerificationCode(
+    @common.Param() params: UserVerificationCodeWhereUniqueInput,
+    @common.Body() data: UserVerificationCodeUpdateInput
+  ): Promise<UserVerificationCode | null> {
+    try {
+      return await this.service.updateUserVerificationCode({
+        where: params,
+        data: {
+          ...data,
 
-        user: data.user ? { connect: data.user } : undefined,
-      },
-    });
+          user: data.user
+            ? {
+                connect: data.user,
+              }
+            : undefined,
+        },
+        select: {
+          createdAt: true,
+          expiresAt: true,
+          id: true,
+          updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
+
+          verificationCode: true,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.userVerificationCodeService.remove(+id);
+  @common.Delete("/:id")
+  @swagger.ApiOkResponse({ type: UserVerificationCode })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async deleteUserVerificationCode(
+    @common.Param() params: UserVerificationCodeWhereUniqueInput
+  ): Promise<UserVerificationCode | null> {
+    try {
+      return await this.service.deleteUserVerificationCode({
+        where: params,
+        select: {
+          createdAt: true,
+          expiresAt: true,
+          id: true,
+          updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
+
+          verificationCode: true,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 }

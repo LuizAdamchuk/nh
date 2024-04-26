@@ -1,94 +1,211 @@
+import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import { isRecordNotFoundError } from "../../prisma.util";
+import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
-
+import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
 import * as nestAccessControl from "nest-access-control";
 import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
-
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
 import { UserConfigService } from "./user-config.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import {
+  UserConfig,
   UserConfigCreateInput,
   UserConfigFindManyArgs,
-  UserConfigUpdateInput,
   UserConfigWhereUniqueInput,
+  UserConfigUpdateInput,
 } from "./dto";
 
 @swagger.ApiTags("userConfig")
 @swagger.ApiBearerAuth()
-@Controller("userConfig")
+@common.Controller("userConfig")
 export class UserConfigController {
-  constructor(protected readonly userConfigService: UserConfigService) {}
-
-  @swagger.ApiCreatedResponse()
-  @Post()
-  create(@Body() data: UserConfigCreateInput) {
-    return this.userConfigService.create({
+  constructor(protected readonly service: UserConfigService) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
+  @common.Post()
+  @swagger.ApiCreatedResponse({ type: UserConfig })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async createUserConfig(
+    @common.Body() data: UserConfigCreateInput
+  ): Promise<UserConfig> {
+    return await this.service.createUserConfig({
       data: {
         ...data,
 
-        user: data.user ? { connect: data.user } : undefined,
+        user: data.user
+          ? {
+              connect: data.user,
+            }
+          : undefined,
+      },
+      select: {
+        alias: true,
+        createdAt: true,
+        id: true,
+        language: true,
+        mode: true,
+        picture: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
 
+  @common.Get()
+  @swagger.ApiOkResponse({ type: [UserConfig] })
   @ApiNestedQuery(UserConfigFindManyArgs)
-  @Get()
-  findAll(@Req() request: Request) {
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async userConfigs(@common.Req() request: Request): Promise<UserConfig[]> {
     const args = plainToClass(UserConfigFindManyArgs, request.query);
-
-    return this.userConfigService.findAll({
+    return this.service.userConfigs({
       ...args,
       select: {
+        alias: true,
+        createdAt: true,
         id: true,
-        user: true,
-        userId: true,
         language: true,
+        mode: true,
+        picture: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
 
-  @Get(":id")
-  findOne(@Param() params: UserConfigWhereUniqueInput) {
-    return this.userConfigService.findOne({
+  @common.Get("/:id")
+  @swagger.ApiOkResponse({ type: UserConfig })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async userConfig(
+    @common.Param() params: UserConfigWhereUniqueInput
+  ): Promise<UserConfig | null> {
+    const result = await this.service.userConfig({
       where: params,
       select: {
+        alias: true,
+        createdAt: true,
         id: true,
-        user: true,
-        userId: true,
         language: true,
+        mode: true,
+        picture: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
+    if (result === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return result;
   }
 
-  @Patch(":id")
-  update(
-    @Param() params: UserConfigWhereUniqueInput,
-    @Body() data: UserConfigUpdateInput
-  ) {
-    return this.userConfigService.update({
-      where: params,
-      data: {
-        ...data,
+  @common.Patch("/:id")
+  @swagger.ApiOkResponse({ type: UserConfig })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async updateUserConfig(
+    @common.Param() params: UserConfigWhereUniqueInput,
+    @common.Body() data: UserConfigUpdateInput
+  ): Promise<UserConfig | null> {
+    try {
+      return await this.service.updateUserConfig({
+        where: params,
+        data: {
+          ...data,
 
-        user: data.user ? { connect: data.user } : undefined,
-      },
-    });
+          user: data.user
+            ? {
+                connect: data.user,
+              }
+            : undefined,
+        },
+        select: {
+          alias: true,
+          createdAt: true,
+          id: true,
+          language: true,
+          mode: true,
+          picture: true,
+          updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.userConfigService.remove(+id);
+  @common.Delete("/:id")
+  @swagger.ApiOkResponse({ type: UserConfig })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async deleteUserConfig(
+    @common.Param() params: UserConfigWhereUniqueInput
+  ): Promise<UserConfig | null> {
+    try {
+      return await this.service.deleteUserConfig({
+        where: params,
+        select: {
+          alias: true,
+          createdAt: true,
+          id: true,
+          language: true,
+          mode: true,
+          picture: true,
+          updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 }

@@ -1,42 +1,35 @@
+import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import { isRecordNotFoundError } from "../../prisma.util";
+import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
-import * as errors from "../../errors";
-
-import * as nestAccessControl from "nest-access-control";
-import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
 
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
 import { QlikWorkspaceService } from "./qlik-workspace.service";
+
 import {
+  QlikWorkspace,
   QlikWorkspaceCreateInput,
   QlikWorkspaceFindManyArgs,
   QlikWorkspaceUpdateInput,
   QlikWorkspaceWhereUniqueInput,
 } from "./dto";
-import { isRecordNotFoundError } from "src/prisma.util";
 
 @swagger.ApiTags("qlikWorkspace")
 @swagger.ApiBearerAuth()
-@Controller("qlikWorkspace")
+@common.Controller("qlikWorkspace")
 export class QlikWorkspaceController {
-  constructor(protected readonly qlikWorkspaceService: QlikWorkspaceService) {}
-
-  @swagger.ApiCreatedResponse()
-  @Post()
-  create(@Body() data: QlikWorkspaceCreateInput) {
-    return this.qlikWorkspaceService.create({
+  constructor(protected readonly service: QlikWorkspaceService) {}
+  @common.Post()
+  @swagger.ApiCreatedResponse({ type: QlikWorkspace })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async createQlikWorkspace(
+    @common.Body() data: QlikWorkspaceCreateInput
+  ): Promise<QlikWorkspace> {
+    return await this.service.createQlikWorkspace({
       data: {
         ...data,
 
@@ -73,12 +66,17 @@ export class QlikWorkspaceController {
     });
   }
 
+  @common.Get()
+  @swagger.ApiOkResponse({ type: [QlikWorkspace] })
   @ApiNestedQuery(QlikWorkspaceFindManyArgs)
-  @Get()
-  findAll(@Req() request: Request) {
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async qlikWorkspaces(
+    @common.Req() request: Request
+  ): Promise<QlikWorkspace[]> {
     const args = plainToClass(QlikWorkspaceFindManyArgs, request.query);
-
-    return this.qlikWorkspaceService.findAll({
+    return this.service.qlikWorkspaces({
       ...args,
       select: {
         createdAt: true,
@@ -101,9 +99,16 @@ export class QlikWorkspaceController {
     });
   }
 
-  @Get(":id")
-  findOne(@Param() params: QlikWorkspaceWhereUniqueInput) {
-    return this.qlikWorkspaceService.findOne({
+  @common.Get("/:id")
+  @swagger.ApiOkResponse({ type: QlikWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async qlikWorkspace(
+    @common.Param() params: QlikWorkspaceWhereUniqueInput
+  ): Promise<QlikWorkspace | null> {
+    const result = await this.service.qlikWorkspace({
       where: params,
       select: {
         createdAt: true,
@@ -124,15 +129,26 @@ export class QlikWorkspaceController {
         },
       },
     });
+    if (result === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return result;
   }
 
-  @Patch(":id")
-  update(
-    @Param() params: QlikWorkspaceWhereUniqueInput,
-    @Body() data: QlikWorkspaceUpdateInput
-  ) {
+  @common.Patch("/:id")
+  @swagger.ApiOkResponse({ type: QlikWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async updateQlikWorkspace(
+    @common.Param() params: QlikWorkspaceWhereUniqueInput,
+    @common.Body() data: QlikWorkspaceUpdateInput
+  ): Promise<QlikWorkspace | null> {
     try {
-      return this.qlikWorkspaceService.update({
+      return await this.service.updateQlikWorkspace({
         where: params,
         data: {
           ...data,
@@ -178,8 +194,44 @@ export class QlikWorkspaceController {
     }
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.qlikWorkspaceService.remove(+id);
+  @common.Delete("/:id")
+  @swagger.ApiOkResponse({ type: QlikWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async deleteQlikWorkspace(
+    @common.Param() params: QlikWorkspaceWhereUniqueInput
+  ): Promise<QlikWorkspace | null> {
+    try {
+      return await this.service.deleteQlikWorkspace({
+        where: params,
+        select: {
+          createdAt: true,
+          id: true,
+
+          qlikintegration: {
+            select: {
+              id: true,
+            },
+          },
+
+          updatedAt: true,
+
+          workspace: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 }

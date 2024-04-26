@@ -4,3 +4,4 @@ export * from "./OrganizationOrderByInput";
 export * from "./OrganizationUpdateInput.dto";
 export * from "./OrganizationWhereInput.dto";
 export * from "./OrganizationWhereUniqueInput.dto";
+export * from "./Organization.dto";

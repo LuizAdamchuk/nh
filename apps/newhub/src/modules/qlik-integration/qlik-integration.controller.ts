@@ -1,88 +1,275 @@
+import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import { isRecordNotFoundError } from "../../prisma.util";
+import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
-
+import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
 import * as nestAccessControl from "nest-access-control";
 import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
-
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
 import { QlikIntegrationService } from "./qlik-integration.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import {
   QlikIntegrationCreateInput,
+  QlikIntegration,
   QlikIntegrationFindManyArgs,
-  QlikIntegrationUpdateInput,
   QlikIntegrationWhereUniqueInput,
+  QlikIntegrationUpdateInput,
 } from "./dto";
+
+import {
+  QlikWorkspaceFindManyArgs,
+  QlikWorkspace,
+  QlikWorkspaceWhereUniqueInput,
+} from "../qlik-workspace/dto";
 
 @swagger.ApiTags("qlikIntegration")
 @swagger.ApiBearerAuth()
-@Controller("qlikIntegration")
+@common.Controller("qlikIntegration")
 export class QlikIntegrationController {
-  constructor(
-    protected readonly qlikIntegrationService: QlikIntegrationService
-  ) {}
-
-  @swagger.ApiCreatedResponse()
-  @Post()
-  create(@Body() createQlikIntegrationDto: QlikIntegrationCreateInput) {
-    return this.qlikIntegrationService.create({
-      data: createQlikIntegrationDto,
+  constructor(protected readonly service: QlikIntegrationService) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
+  @common.Post()
+  @swagger.ApiCreatedResponse({ type: QlikIntegration })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async createQlikIntegration(
+    @common.Body() data: QlikIntegrationCreateInput
+  ): Promise<QlikIntegration> {
+    return await this.service.createQlikIntegration({
+      data: data,
+      select: {
+        alias: true,
+        createdAt: true,
+        domain: true,
+        id: true,
+        issuer: true,
+        keyId: true,
+        qlikId: true,
+        qlikTheme: true,
+        qlikWebIntegrationId: true,
+        updatedAt: true,
+      },
     });
   }
 
+  @common.Get()
+  @swagger.ApiOkResponse({ type: [QlikIntegration] })
   @ApiNestedQuery(QlikIntegrationFindManyArgs)
-  @Get()
-  findAll(@Req() request: Request) {
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async qlikIntegrations(
+    @common.Req() request: Request
+  ): Promise<QlikIntegration[]> {
     const args = plainToClass(QlikIntegrationFindManyArgs, request.query);
-
-    return this.qlikIntegrationService.findAll({
+    return this.service.qlikIntegrations({
       ...args,
       select: {
-        id: true,
         alias: true,
+        createdAt: true,
         domain: true,
+        id: true,
+        issuer: true,
+        keyId: true,
+        qlikId: true,
         qlikTheme: true,
+        qlikWebIntegrationId: true,
+        updatedAt: true,
       },
     });
   }
 
-  @Get(":id")
-  findOne(@Param() params: QlikIntegrationWhereUniqueInput) {
-    return this.qlikIntegrationService.findOne({
+  @common.Get("/:id")
+  @swagger.ApiOkResponse({ type: QlikIntegration })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async qlikIntegration(
+    @common.Param() params: QlikIntegrationWhereUniqueInput
+  ): Promise<QlikIntegration | null> {
+    const result = await this.service.qlikIntegration({
       where: params,
       select: {
-        id: true,
         alias: true,
+        createdAt: true,
         domain: true,
+        id: true,
+        issuer: true,
+        keyId: true,
+        qlikId: true,
         qlikTheme: true,
+        qlikWebIntegrationId: true,
+        updatedAt: true,
       },
     });
+    if (result === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return result;
   }
 
-  @Patch(":id")
-  update(
-    @Param() params: QlikIntegrationWhereUniqueInput,
-    @Body() data: QlikIntegrationUpdateInput
-  ) {
-    return this.qlikIntegrationService.update({
+  @common.Patch("/:id")
+  @swagger.ApiOkResponse({ type: QlikIntegration })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async updateQlikIntegration(
+    @common.Param() params: QlikIntegrationWhereUniqueInput,
+    @common.Body() data: QlikIntegrationUpdateInput
+  ): Promise<QlikIntegration | null> {
+    try {
+      return await this.service.updateQlikIntegration({
+        where: params,
+        data: data,
+        select: {
+          alias: true,
+          createdAt: true,
+          domain: true,
+          id: true,
+          issuer: true,
+          keyId: true,
+          qlikId: true,
+          qlikTheme: true,
+          qlikWebIntegrationId: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @common.Delete("/:id")
+  @swagger.ApiOkResponse({ type: QlikIntegration })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async deleteQlikIntegration(
+    @common.Param() params: QlikIntegrationWhereUniqueInput
+  ): Promise<QlikIntegration | null> {
+    try {
+      return await this.service.deleteQlikIntegration({
+        where: params,
+        select: {
+          alias: true,
+          createdAt: true,
+          domain: true,
+          id: true,
+          issuer: true,
+          keyId: true,
+          qlikId: true,
+          qlikTheme: true,
+          qlikWebIntegrationId: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @common.Get("/:id/qlikWorkspaces")
+  @ApiNestedQuery(QlikWorkspaceFindManyArgs)
+  async findQlikWorkspaces(
+    @common.Req() request: Request,
+    @common.Param() params: QlikIntegrationWhereUniqueInput
+  ): Promise<QlikWorkspace[]> {
+    const query = plainToClass(QlikWorkspaceFindManyArgs, request.query);
+    const results = await this.service.findQlikWorkspaces(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        id: true,
+
+        qlikintegration: {
+          select: {
+            id: true,
+          },
+        },
+
+        updatedAt: true,
+
+        workspace: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/qlikWorkspaces")
+  async connectQlikWorkspaces(
+    @common.Param() params: QlikIntegrationWhereUniqueInput,
+    @common.Body() body: QlikWorkspaceWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      qlikWorkspaces: {
+        connect: body,
+      },
+    };
+    await this.service.updateQlikIntegration({
       where: params,
-      data: data,
+      data,
+      select: { id: true },
     });
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.qlikIntegrationService.remove(+id);
+  @common.Patch("/:id/qlikWorkspaces")
+  async updateQlikWorkspaces(
+    @common.Param() params: QlikIntegrationWhereUniqueInput,
+    @common.Body() body: QlikWorkspaceWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      qlikWorkspaces: {
+        set: body,
+      },
+    };
+    await this.service.updateQlikIntegration({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/qlikWorkspaces")
+  async disconnectQlikWorkspaces(
+    @common.Param() params: QlikIntegrationWhereUniqueInput,
+    @common.Body() body: QlikWorkspaceWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      qlikWorkspaces: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateQlikIntegration({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

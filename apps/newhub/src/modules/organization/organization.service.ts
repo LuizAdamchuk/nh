@@ -1,5 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, Organization as PrismaOrganization } from "@prisma/client";
+import {
+  Prisma,
+  Organization as PrismaOrganization,
+  OrganizationsWorkspace as PrismaOrganizationsWorkspace,
+} from "@prisma/client";
 
 import { PrismaService } from "src/prisma/prisma.service";
 
@@ -7,32 +11,48 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class OrganizationService {
   constructor(protected readonly prisma: PrismaService) {}
 
-  create(args: Prisma.OrganizationCreateArgs): Promise<PrismaOrganization> {
-    return this.prisma.organization.create({ ...args });
+  async count(
+    args: Omit<Prisma.OrganizationCountArgs, "select">
+  ): Promise<number> {
+    return this.prisma.organization.count(args);
   }
 
-  findAll(
-    args: Prisma.OrganizationFindManyArgs
+  async organizations<T extends Prisma.OrganizationFindManyArgs>(
+    args: Prisma.SelectSubset<T, Prisma.OrganizationFindManyArgs>
   ): Promise<PrismaOrganization[]> {
     return this.prisma.organization.findMany<Prisma.OrganizationFindManyArgs>(
       args
     );
   }
-
-  findOne(args: Prisma.OrganizationFindUniqueArgs) {
+  async organization<T extends Prisma.OrganizationFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.OrganizationFindUniqueArgs>
+  ): Promise<PrismaOrganization | null> {
     return this.prisma.organization.findUnique(args);
   }
-
-  update(args: Prisma.OrganizationUpdateArgs): Promise<PrismaOrganization> {
-    return this.prisma.organization.update({
-      ...args,
-      data: {
-        ...args.data,
-      },
-    });
+  async createOrganization<T extends Prisma.OrganizationCreateArgs>(
+    args: Prisma.SelectSubset<T, Prisma.OrganizationCreateArgs>
+  ): Promise<PrismaOrganization> {
+    return this.prisma.organization.create<T>(args);
+  }
+  async updateOrganization<T extends Prisma.OrganizationUpdateArgs>(
+    args: Prisma.SelectSubset<T, Prisma.OrganizationUpdateArgs>
+  ): Promise<PrismaOrganization> {
+    return this.prisma.organization.update<T>(args);
+  }
+  async deleteOrganization<T extends Prisma.OrganizationDeleteArgs>(
+    args: Prisma.SelectSubset<T, Prisma.OrganizationDeleteArgs>
+  ): Promise<PrismaOrganization> {
+    return this.prisma.organization.delete(args);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} organization`;
+  async findOrganizationsWorkspaces(
+    parentId: string,
+    args: Prisma.OrganizationsWorkspaceFindManyArgs
+  ): Promise<PrismaOrganizationsWorkspace[]> {
+    return this.prisma.organization
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .organizationsWorkspaces(args);
   }
 }

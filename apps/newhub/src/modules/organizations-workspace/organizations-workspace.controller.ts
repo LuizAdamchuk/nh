@@ -1,24 +1,14 @@
+import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import { isRecordNotFoundError } from "../../prisma.util";
+import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
-
-import * as nestAccessControl from "nest-access-control";
-import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
 
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
 import { OrganizationsWorkspaceService } from "./organizations-workspace.service";
 import {
+  OrganizationsWorkspace,
   OrganizationsWorkspaceCreateInput,
   OrganizationsWorkspaceFindManyArgs,
   OrganizationsWorkspaceUpdateInput,
@@ -27,16 +17,18 @@ import {
 
 @swagger.ApiTags("organizationsWorkspace")
 @swagger.ApiBearerAuth()
-@Controller("organizationsWorkspace")
+@common.Controller("organizationsWorkspace")
 export class OrganizationsWorkspaceController {
-  constructor(
-    protected readonly organizationsWorkspaceService: OrganizationsWorkspaceService
-  ) {}
-
-  @swagger.ApiCreatedResponse()
-  @Post()
-  create(@Body() data: OrganizationsWorkspaceCreateInput) {
-    return this.organizationsWorkspaceService.create({
+  constructor(protected readonly service: OrganizationsWorkspaceService) {}
+  @common.Post()
+  @swagger.ApiCreatedResponse({ type: OrganizationsWorkspace })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async createOrganizationsWorkspace(
+    @common.Body() data: OrganizationsWorkspaceCreateInput
+  ): Promise<OrganizationsWorkspace> {
+    return await this.service.createOrganizationsWorkspace({
       data: {
         ...data,
 
@@ -73,15 +65,20 @@ export class OrganizationsWorkspaceController {
     });
   }
 
+  @common.Get()
+  @swagger.ApiOkResponse({ type: [OrganizationsWorkspace] })
   @ApiNestedQuery(OrganizationsWorkspaceFindManyArgs)
-  @Get()
-  findAll(@Req() request: Request) {
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async organizationsWorkspaces(
+    @common.Req() request: Request
+  ): Promise<OrganizationsWorkspace[]> {
     const args = plainToClass(
       OrganizationsWorkspaceFindManyArgs,
       request.query
     );
-
-    return this.organizationsWorkspaceService.findAll({
+    return this.service.organizationsWorkspaces({
       ...args,
       select: {
         createdAt: true,
@@ -104,9 +101,16 @@ export class OrganizationsWorkspaceController {
     });
   }
 
-  @Get(":id")
-  findOne(@Param() params: OrganizationsWorkspaceWhereUniqueInput) {
-    return this.organizationsWorkspaceService.findOne({
+  @common.Get("/:id")
+  @swagger.ApiOkResponse({ type: OrganizationsWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async organizationsWorkspace(
+    @common.Param() params: OrganizationsWorkspaceWhereUniqueInput
+  ): Promise<OrganizationsWorkspace | null> {
+    const result = await this.service.organizationsWorkspace({
       where: params,
       select: {
         createdAt: true,
@@ -127,53 +131,109 @@ export class OrganizationsWorkspaceController {
         },
       },
     });
+    if (result === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return result;
   }
 
-  @Patch(":id")
-  update(
-    @Param() params: OrganizationsWorkspaceWhereUniqueInput,
-    @Body() data: OrganizationsWorkspaceUpdateInput
-  ) {
-    return this.organizationsWorkspaceService.update({
-      where: params,
-      data: {
-        ...data,
+  @common.Patch("/:id")
+  @swagger.ApiOkResponse({ type: OrganizationsWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async updateOrganizationsWorkspace(
+    @common.Param() params: OrganizationsWorkspaceWhereUniqueInput,
+    @common.Body() data: OrganizationsWorkspaceUpdateInput
+  ): Promise<OrganizationsWorkspace | null> {
+    try {
+      return await this.service.updateOrganizationsWorkspace({
+        where: params,
+        data: {
+          ...data,
 
-        organization: data.organization
-          ? {
-              connect: data.organization,
-            }
-          : undefined,
+          organization: data.organization
+            ? {
+                connect: data.organization,
+              }
+            : undefined,
 
-        workspace: data.workspace
-          ? {
-              connect: data.workspace,
-            }
-          : undefined,
-      },
-      select: {
-        createdAt: true,
-        id: true,
+          workspace: data.workspace
+            ? {
+                connect: data.workspace,
+              }
+            : undefined,
+        },
+        select: {
+          createdAt: true,
+          id: true,
 
-        organization: {
-          select: {
-            id: true,
+          organization: {
+            select: {
+              id: true,
+            },
+          },
+
+          updatedAt: true,
+
+          workspace: {
+            select: {
+              id: true,
+            },
           },
         },
-
-        updatedAt: true,
-
-        workspace: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.organizationsWorkspaceService.remove(+id);
+  @common.Delete("/:id")
+  @swagger.ApiOkResponse({ type: OrganizationsWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async deleteOrganizationsWorkspace(
+    @common.Param() params: OrganizationsWorkspaceWhereUniqueInput
+  ): Promise<OrganizationsWorkspace | null> {
+    try {
+      return await this.service.deleteOrganizationsWorkspace({
+        where: params,
+        select: {
+          createdAt: true,
+          id: true,
+
+          organization: {
+            select: {
+              id: true,
+            },
+          },
+
+          updatedAt: true,
+
+          workspace: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 }
