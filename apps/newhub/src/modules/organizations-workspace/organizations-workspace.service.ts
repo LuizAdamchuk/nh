@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 
 import {
@@ -6,7 +7,7 @@ import {
   Organization as PrismaOrganization,
   Workspace as PrismaWorkspace,
 } from "@prisma/client";
-
+@Injectable()
 export class OrganizationsWorkspaceService {
   constructor(protected readonly prisma: PrismaService) {}
 

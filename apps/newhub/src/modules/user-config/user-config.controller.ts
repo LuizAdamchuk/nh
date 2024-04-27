@@ -5,11 +5,9 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
-import * as nestAccessControl from "nest-access-control";
-import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+
 import { UserConfigService } from "./user-config.service";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
+
 import {
   UserConfig,
   UserConfigCreateInput,
@@ -23,7 +21,6 @@ import {
 @common.Controller("userConfig")
 export class UserConfigController {
   constructor(protected readonly service: UserConfigService) {}
-  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: UserConfig })
   @swagger.ApiForbiddenResponse({

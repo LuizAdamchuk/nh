@@ -78,6 +78,8 @@ export class OrganizationsWorkspaceController {
       OrganizationsWorkspaceFindManyArgs,
       request.query
     );
+    console.log("🚀 ~ OrganizationsWorkspaceController ~ args:", args);
+
     return this.service.organizationsWorkspaces({
       ...args,
       select: {

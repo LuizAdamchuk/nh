@@ -1,5 +1,4 @@
-import { PrismaService } from "../../prisma/prisma.service";
-
+import { Injectable } from "@nestjs/common";
 import {
   Prisma,
   Workspace as PrismaWorkspace,
@@ -7,7 +6,8 @@ import {
   QlikWorkspace as PrismaQlikWorkspace,
   UsersWorkspace as PrismaUsersWorkspace,
 } from "@prisma/client";
-
+import { PrismaService } from "src/prisma/prisma.service";
+@Injectable()
 export class WorkspaceService {
   constructor(protected readonly prisma: PrismaService) {}
 
@@ -30,6 +30,7 @@ export class WorkspaceService {
   async createWorkspace<T extends Prisma.WorkspaceCreateArgs>(
     args: Prisma.SelectSubset<T, Prisma.WorkspaceCreateArgs>
   ): Promise<PrismaWorkspace> {
+    console.log("Prisma object:", this.prisma);
     return this.prisma.workspace.create<T>(args);
   }
   async updateWorkspace<T extends Prisma.WorkspaceUpdateArgs>(

@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 
 import {
@@ -6,7 +7,7 @@ import {
   QlikIntegration as PrismaQlikIntegration,
   Workspace as PrismaWorkspace,
 } from "@prisma/client";
-
+@Injectable()
 export class QlikWorkspaceService {
   constructor(protected readonly prisma: PrismaService) {}
 

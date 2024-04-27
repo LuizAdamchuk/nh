@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 
 import {
@@ -5,7 +6,7 @@ import {
   UserVerificationCode as PrismaUserVerificationCode,
   User as PrismaUser,
 } from "@prisma/client";
-
+@Injectable()
 export class UserVerificationCodeService {
   constructor(protected readonly prisma: PrismaService) {}
 

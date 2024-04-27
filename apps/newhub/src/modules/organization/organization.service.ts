@@ -6,7 +6,6 @@ import {
 } from "@prisma/client";
 
 import { PrismaService } from "src/prisma/prisma.service";
-
 @Injectable()
 export class OrganizationService {
   constructor(protected readonly prisma: PrismaService) {}
@@ -20,6 +19,8 @@ export class OrganizationService {
   async organizations<T extends Prisma.OrganizationFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.OrganizationFindManyArgs>
   ): Promise<PrismaOrganization[]> {
+    console.log("Prisma object:", this.prisma);
+
     return this.prisma.organization.findMany<Prisma.OrganizationFindManyArgs>(
       args
     );
