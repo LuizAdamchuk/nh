@@ -1,11 +1,11 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringNullableFilter } from "src/util/StringNullableFilter";
+import { StringNullableFilter } from "../../../util/StringNullableFilter";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
-import { DateTimeFilter } from "src/util/DateTimeFilter";
-import { StringFilter } from "src/util/StringFilter";
-import { BooleanNullableFilter } from "src/util/BooleanNullableFilter";
+import { DateTimeFilter } from "../../../util/DateTimeFilter";
+import { StringFilter } from "../../../util/StringFilter";
+import { BooleanNullableFilter } from "../../../util/BooleanNullableFilter";
 import { QlikWorkspaceListRelationFilter } from "../../qlik-workspace/dto";
 
 @InputType()

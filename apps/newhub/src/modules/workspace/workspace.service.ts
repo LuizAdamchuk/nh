@@ -6,7 +6,7 @@ import {
   QlikWorkspace as PrismaQlikWorkspace,
   UsersWorkspace as PrismaUsersWorkspace,
 } from "@prisma/client";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "../../prisma/prisma.service";
 @Injectable()
 export class WorkspaceService {
   constructor(protected readonly prisma: PrismaService) {}

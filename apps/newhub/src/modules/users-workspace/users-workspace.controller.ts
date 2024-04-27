@@ -1,24 +1,14 @@
+import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import { isRecordNotFoundError } from "../../prisma.util";
+import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
-
-import * as nestAccessControl from "nest-access-control";
-import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
 
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Req,
-  Patch,
-  Param,
-  Delete,
-} from "@nestjs/common";
 import { UsersWorkspaceService } from "./users-workspace.service";
 import {
+  UsersWorkspace,
   UsersWorkspaceCreateInput,
   UsersWorkspaceFindManyArgs,
   UsersWorkspaceUpdateInput,
@@ -27,16 +17,18 @@ import {
 
 @swagger.ApiTags("usersWorkspace")
 @swagger.ApiBearerAuth()
-@Controller("usersWorkspace")
+@common.Controller("usersWorkspace")
 export class UsersWorkspaceController {
-  constructor(
-    protected readonly usersWorkspaceService: UsersWorkspaceService
-  ) {}
-
-  @swagger.ApiCreatedResponse()
-  @Post()
-  create(@Body() data: UsersWorkspaceCreateInput) {
-    return this.usersWorkspaceService.create({
+  constructor(protected readonly service: UsersWorkspaceService) {}
+  @common.Post()
+  @swagger.ApiCreatedResponse({ type: UsersWorkspace })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async createUsersWorkspace(
+    @common.Body() data: UsersWorkspaceCreateInput
+  ): Promise<UsersWorkspace> {
+    return await this.service.createUsersWorkspace({
       data: {
         ...data,
 
@@ -72,12 +64,17 @@ export class UsersWorkspaceController {
     });
   }
 
+  @common.Get()
+  @swagger.ApiOkResponse({ type: [UsersWorkspace] })
   @ApiNestedQuery(UsersWorkspaceFindManyArgs)
-  @Get()
-  findAll(@Req() request: Request) {
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async usersWorkspaces(
+    @common.Req() request: Request
+  ): Promise<UsersWorkspace[]> {
     const args = plainToClass(UsersWorkspaceFindManyArgs, request.query);
-
-    return this.usersWorkspaceService.findAll({
+    return this.service.usersWorkspaces({
       ...args,
       select: {
         createdAt: true,
@@ -99,9 +96,16 @@ export class UsersWorkspaceController {
     });
   }
 
-  @Get(":id")
-  findOne(@Param() params: UsersWorkspaceWhereUniqueInput) {
-    return this.usersWorkspaceService.findOne({
+  @common.Get("/:id")
+  @swagger.ApiOkResponse({ type: UsersWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async usersWorkspace(
+    @common.Param() params: UsersWorkspaceWhereUniqueInput
+  ): Promise<UsersWorkspace | null> {
+    const result = await this.service.usersWorkspace({
       where: params,
       select: {
         createdAt: true,
@@ -121,52 +125,107 @@ export class UsersWorkspaceController {
         },
       },
     });
+    if (result === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return result;
   }
 
-  @Patch(":id")
-  update(
-    @Param() params: UsersWorkspaceWhereUniqueInput,
-    @Body() data: UsersWorkspaceUpdateInput
-  ) {
-    return this.usersWorkspaceService.update({
-      where: params,
-      data: {
-        ...data,
+  @common.Patch("/:id")
+  @swagger.ApiOkResponse({ type: UsersWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async updateUsersWorkspace(
+    @common.Param() params: UsersWorkspaceWhereUniqueInput,
+    @common.Body() data: UsersWorkspaceUpdateInput
+  ): Promise<UsersWorkspace | null> {
+    try {
+      return await this.service.updateUsersWorkspace({
+        where: params,
+        data: {
+          ...data,
 
-        user: data.user
-          ? {
-              connect: data.user,
-            }
-          : undefined,
+          user: data.user
+            ? {
+                connect: data.user,
+              }
+            : undefined,
 
-        workspace: data.workspace
-          ? {
-              connect: data.workspace,
-            }
-          : undefined,
-      },
-      select: {
-        createdAt: true,
-        id: true,
-        updatedAt: true,
+          workspace: data.workspace
+            ? {
+                connect: data.workspace,
+              }
+            : undefined,
+        },
+        select: {
+          createdAt: true,
+          id: true,
+          updatedAt: true,
 
-        user: {
-          select: {
-            id: true,
+          user: {
+            select: {
+              id: true,
+            },
+          },
+
+          workspace: {
+            select: {
+              id: true,
+            },
           },
         },
-
-        workspace: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.usersWorkspaceService.remove(+id);
+  @common.Delete("/:id")
+  @swagger.ApiOkResponse({ type: UsersWorkspace })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async deleteUsersWorkspace(
+    @common.Param() params: UsersWorkspaceWhereUniqueInput
+  ): Promise<UsersWorkspace | null> {
+    try {
+      return await this.service.deleteUsersWorkspace({
+        where: params,
+        select: {
+          createdAt: true,
+          id: true,
+          updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
+
+          workspace: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
   }
 }

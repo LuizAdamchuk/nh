@@ -1,38 +1,64 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, UsersWorkspace as PrismaUsersWorkspace } from "@prisma/client";
+import { PrismaService } from "../../prisma/prisma.service";
 
-import { PrismaService } from "src/prisma/prisma.service";
+import {
+  Prisma,
+  UsersWorkspace as PrismaUsersWorkspace,
+  User as PrismaUser,
+  Workspace as PrismaWorkspace,
+} from "@prisma/client";
 
 @Injectable()
 export class UsersWorkspaceService {
   constructor(protected readonly prisma: PrismaService) {}
 
-  create(args: Prisma.UsersWorkspaceCreateArgs): Promise<PrismaUsersWorkspace> {
-    return this.prisma.usersWorkspace.create({ ...args });
+  async count(
+    args: Omit<Prisma.UsersWorkspaceCountArgs, "select">
+  ): Promise<number> {
+    return this.prisma.usersWorkspace.count(args);
   }
 
-  findAll(
-    args: Prisma.UsersWorkspaceFindManyArgs
+  async usersWorkspaces<T extends Prisma.UsersWorkspaceFindManyArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UsersWorkspaceFindManyArgs>
   ): Promise<PrismaUsersWorkspace[]> {
     return this.prisma.usersWorkspace.findMany<Prisma.UsersWorkspaceFindManyArgs>(
       args
     );
   }
-
-  findOne(args: Prisma.UsersWorkspaceFindUniqueArgs) {
+  async usersWorkspace<T extends Prisma.UsersWorkspaceFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UsersWorkspaceFindUniqueArgs>
+  ): Promise<PrismaUsersWorkspace | null> {
     return this.prisma.usersWorkspace.findUnique(args);
   }
-
-  update(args: Prisma.UsersWorkspaceUpdateArgs): Promise<PrismaUsersWorkspace> {
-    return this.prisma.usersWorkspace.update({
-      ...args,
-      data: {
-        ...args.data,
-      },
-    });
+  async createUsersWorkspace<T extends Prisma.UsersWorkspaceCreateArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UsersWorkspaceCreateArgs>
+  ): Promise<PrismaUsersWorkspace> {
+    return this.prisma.usersWorkspace.create<T>(args);
+  }
+  async updateUsersWorkspace<T extends Prisma.UsersWorkspaceUpdateArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UsersWorkspaceUpdateArgs>
+  ): Promise<PrismaUsersWorkspace> {
+    return this.prisma.usersWorkspace.update<T>(args);
+  }
+  async deleteUsersWorkspace<T extends Prisma.UsersWorkspaceDeleteArgs>(
+    args: Prisma.SelectSubset<T, Prisma.UsersWorkspaceDeleteArgs>
+  ): Promise<PrismaUsersWorkspace> {
+    return this.prisma.usersWorkspace.delete(args);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usersWorkspace`;
+  async getUser(parentId: string): Promise<PrismaUser | null> {
+    return this.prisma.usersWorkspace
+      .findUnique({
+        where: { id: parentId },
+      })
+      .user();
+  }
+
+  async getWorkspace(parentId: string): Promise<PrismaWorkspace | null> {
+    return this.prisma.usersWorkspace
+      .findUnique({
+        where: { id: parentId },
+      })
+      .workspace();
   }
 }
