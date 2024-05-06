@@ -4,7 +4,7 @@ import * as gqlACGuard from "../../auth/gqlAC.guard";
 import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
 import * as common from "@nestjs/common";
 import { UserResolverBase } from "./base/user.resolver.base";
-import { User } from "./base/User";
+import { User } from "./dto/User";
 import { UserService } from "./user.service";
 
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)

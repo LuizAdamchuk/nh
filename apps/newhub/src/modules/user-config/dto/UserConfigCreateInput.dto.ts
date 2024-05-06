@@ -1,7 +1,7 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString, IsOptional, ValidateNested } from "class-validator";
-import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { UserWhereUniqueInput } from "../../user/dto/UserWhereUniqueInput";
 import { Type } from "class-transformer";
 
 @InputType()

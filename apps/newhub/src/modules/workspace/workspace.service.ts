@@ -30,7 +30,6 @@ export class WorkspaceService {
   async createWorkspace<T extends Prisma.WorkspaceCreateArgs>(
     args: Prisma.SelectSubset<T, Prisma.WorkspaceCreateArgs>
   ): Promise<PrismaWorkspace> {
-    console.log("Prisma object:", this.prisma);
     return this.prisma.workspace.create<T>(args);
   }
   async updateWorkspace<T extends Prisma.WorkspaceUpdateArgs>(

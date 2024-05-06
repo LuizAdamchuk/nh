@@ -13,8 +13,8 @@ import {
 const { PORT = 3000 } = process.env;
 
 async function main() {
-  const app = await NestFactory.create(AppModule, { cors: true });
-
+  const app = await NestFactory.create(AppModule);
+  app.enableCors({ origin: "*" });
   app.setGlobalPrefix("api");
   app.useGlobalPipes(
     new ValidationPipe({

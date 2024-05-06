@@ -2,7 +2,7 @@ import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, ValidateNested, IsOptional, IsString } from "class-validator";
 import { Type } from "class-transformer";
-import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { UserWhereUniqueInput } from "../../user/dto/UserWhereUniqueInput";
 
 @InputType()
 class UserVerificationCodeCreateInput {

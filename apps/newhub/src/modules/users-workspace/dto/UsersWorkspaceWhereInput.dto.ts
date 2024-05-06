@@ -4,7 +4,7 @@ import { DateTimeFilter } from "../../../util/DateTimeFilter";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
 import { StringFilter } from "../../../util/StringFilter";
-import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { UserWhereUniqueInput } from "../../user/dto/UserWhereUniqueInput";
 import { WorkspaceWhereUniqueInput } from "../../workspace/dto";
 
 @InputType()

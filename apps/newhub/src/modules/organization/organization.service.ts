@@ -6,9 +6,15 @@ import {
 } from "@prisma/client";
 
 import { PrismaService } from "../../prisma/prisma.service";
+import { WorkspaceService } from "../workspace/workspace.service";
+import { OrganizationsWorkspaceService } from "../organizations-workspace/organizations-workspace.service";
 @Injectable()
 export class OrganizationService {
-  constructor(protected readonly prisma: PrismaService) {}
+  constructor(
+    protected readonly prisma: PrismaService,
+    protected readonly workspaceService: WorkspaceService,
+    protected readonly organizationWorkspaceService: OrganizationsWorkspaceService
+  ) {}
 
   async count(
     args: Omit<Prisma.OrganizationCountArgs, "select">
@@ -19,8 +25,6 @@ export class OrganizationService {
   async organizations<T extends Prisma.OrganizationFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.OrganizationFindManyArgs>
   ): Promise<PrismaOrganization[]> {
-    console.log("Prisma object:", this.prisma);
-
     return this.prisma.organization.findMany<Prisma.OrganizationFindManyArgs>(
       args
     );
@@ -33,7 +37,30 @@ export class OrganizationService {
   async createOrganization<T extends Prisma.OrganizationCreateArgs>(
     args: Prisma.SelectSubset<T, Prisma.OrganizationCreateArgs>
   ): Promise<PrismaOrganization> {
-    return this.prisma.organization.create<T>(args);
+    const organization = await this.prisma.organization.create<T>(args);
+    console.log("🚀 ~ OrganizationService ~ organization:", organization);
+
+    const workspace = await this.workspaceService.createWorkspace({
+      data: {
+        name: organization.name,
+        slug: `${organization.name}-slug`,
+      },
+    });
+    console.log("🚀 ~ OrganizationService ~ workspace:", workspace);
+
+    const organizationWorkspaceRelation =
+      await this.organizationWorkspaceService.createOrganizationsWorkspace({
+        data: {
+          organizationId: organization.id,
+          workspaceId: workspace.id,
+        },
+      });
+    console.log(
+      "🚀 ~ OrganizationService ~ organizationWorkspaceRelation:",
+      organizationWorkspaceRelation
+    );
+
+    return organization;
   }
   async updateOrganization<T extends Prisma.OrganizationUpdateArgs>(
     args: Prisma.SelectSubset<T, Prisma.OrganizationUpdateArgs>

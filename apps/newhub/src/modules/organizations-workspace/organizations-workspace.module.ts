@@ -5,5 +5,6 @@ import { OrganizationsWorkspaceController } from "./organizations-workspace.cont
 @Module({
   controllers: [OrganizationsWorkspaceController],
   providers: [OrganizationsWorkspaceService],
+  exports: [OrganizationsWorkspaceService],
 })
 export class OrganizationsWorkspaceModule {}

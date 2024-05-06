@@ -18,14 +18,11 @@ export class UserConfigService {
   async userConfigs<T extends Prisma.UserConfigFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.UserConfigFindManyArgs>
   ): Promise<PrismaUserConfig[]> {
-    console.log("🚀 ~ UserConfigService ~ args:", args);
-
     return this.prisma.userConfig.findMany<Prisma.UserConfigFindManyArgs>(args);
   }
   async userConfig<T extends Prisma.UserConfigFindUniqueArgs>(
     args: Prisma.SelectSubset<T, Prisma.UserConfigFindUniqueArgs>
   ): Promise<PrismaUserConfig | null> {
-    console.log("🚀 ~ UserConfigService ~ args:", args);
     return this.prisma.userConfig.findUnique(args);
   }
   async createUserConfig<T extends Prisma.UserConfigCreateArgs>(

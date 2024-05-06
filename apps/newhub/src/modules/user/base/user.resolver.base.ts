@@ -8,13 +8,13 @@ import { GqlDefaultAuthGuard } from "../../../auth/gqlDefaultAuth.guard";
 import * as common from "@nestjs/common";
 import { AclFilterResponseInterceptor } from "../../../interceptors/aclFilterResponse.interceptor";
 import { AclValidateRequestInterceptor } from "../../../interceptors/aclValidateRequest.interceptor";
-import { User } from "./User";
-import { UserCountArgs } from "./UserCountArgs";
-import { UserFindManyArgs } from "./UserFindManyArgs";
-import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
-import { CreateUserArgs } from "./CreateUserArgs";
-import { UpdateUserArgs } from "./UpdateUserArgs";
-import { DeleteUserArgs } from "./DeleteUserArgs";
+import { User } from "../dto/User";
+import { UserCountArgs } from "../dto/UserCountArgs";
+import { UserFindManyArgs } from "../dto/UserFindManyArgs";
+import { UserFindUniqueArgs } from "../dto/UserFindUniqueArgs";
+import { CreateUserArgs } from "../dto/CreateUserArgs";
+import { UpdateUserArgs } from "../dto/UpdateUserArgs";
+import { DeleteUserArgs } from "../dto/DeleteUserArgs";
 import { UserService } from "../user.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => User)
