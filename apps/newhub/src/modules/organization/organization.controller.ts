@@ -203,20 +203,25 @@ export class OrganizationController {
     return results;
   }
 
-  @common.Post("/:id/organizationsWorkspaces")
+  @common.Post("/organizationsWorkspaces")
+  @swagger.ApiCreatedResponse({ type: Organization })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async connectOrganizationsWorkspaces(
-    @common.Param() params: OrganizationWhereUniqueInput,
-    @common.Body() body: OrganizationsWorkspaceWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      organizationsWorkspaces: {
-        connect: body,
+    @common.Body() data: OrganizationCreateInput
+  ): Promise<Organization> {
+    return await this.service.createOrganizationWorkspaceAndLink({
+      data: data,
+      select: {
+        createdAt: true,
+        domain: true,
+        id: true,
+        name: true,
+        owner: true,
+        slug: true,
+        updatedAt: true,
       },
-    };
-    await this.service.updateOrganization({
-      where: params,
-      data,
-      select: { id: true },
     });
   }
 

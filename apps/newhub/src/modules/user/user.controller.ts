@@ -59,6 +59,12 @@ export class UserController {
         roles: true,
         updatedAt: true,
         username: true,
+        usersWorkspaces: {
+          select: {
+            id: true,
+            workspace: true,
+          },
+        },
       },
     });
   }
@@ -83,6 +89,12 @@ export class UserController {
         roles: true,
         updatedAt: true,
         username: true,
+        usersWorkspaces: {
+          select: {
+            id: true,
+            workspace: true,
+          },
+        },
       },
     });
     if (result === null) {
