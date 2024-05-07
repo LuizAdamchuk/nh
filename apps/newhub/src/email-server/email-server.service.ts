@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
 import { UserVerificationCodeService } from "src/modules/user-verification-code/user-verification-code.service";
 import { UserService } from "src/modules/user/user.service";
-const { MAILER_VALIDATION_URL } = process.env;
+import { confirmUrl, getEmailValidationConfig } from "./inputs";
 
 @Injectable()
 export class EmailServerService {
@@ -23,24 +23,21 @@ export class EmailServerService {
 
     if (!user) throw new BadRequestException("No user founded.");
 
-    const setExpireDate = new Date().setHours(new Date().getHours() + 2);
-
     const userVericationCode =
       await this.userVerificationCodeService.createUserVerificationCode({
         data: {
-          expiresAt: new Date(setExpireDate),
-          verificationCode: String(this.generateRandom6DigitNumber()),
+          expiresAt: this.calculateExpirationTime(),
+          verificationCode: this.generateRandom6DigitNumber(),
           userId: user.id,
         },
       });
-    const confirmUrl = `${MAILER_VALIDATION_URL}/${user.id}/${userVericationCode.verificationCode}`;
 
-    await this.mailerService.sendMail({
-      to: email,
-      from: "noresponse@cluster.io",
-      subject: "Confirmação de Email",
-      html: `<p>Por favor, confirme seu email clicando <a href="${confirmUrl}">aqui</a>.</p>`,
-    });
+    await this.mailerService.sendMail(
+      getEmailValidationConfig(
+        email,
+        confirmUrl(user.id, userVericationCode.verificationCode)
+      )
+    );
   }
 
   async validateVerificationCode(userId: string, code: string): Promise<void> {
@@ -58,13 +55,7 @@ export class EmailServerService {
       },
     });
 
-    if (!userVerificationCode)
-      throw new BadRequestException("Verification Code error.");
-
-    if (new Date(userVerificationCode.expiresAt) < new Date())
-      throw new BadRequestException("Verification Code expired.");
-
-    if (user?.status) throw new BadRequestException("User already validated.");
+    this.validations(userVerificationCode, user);
 
     await this.userService.updateUser({
       where: {
@@ -78,7 +69,25 @@ export class EmailServerService {
 
   // --- Private --- //
 
-  private generateRandom6DigitNumber(): number {
-    return parseInt(Math.random().toString().substring(2, 8), 10);
+  private validations(userVerificationCode: any, user: any) {
+    if (!userVerificationCode)
+      throw new BadRequestException("Verification Code error.");
+
+    if (this.isExpired(userVerificationCode.expiresAt))
+      throw new BadRequestException("Verification Code expired.");
+
+    if (user?.status) throw new BadRequestException("User already validated.");
+  }
+
+  private generateRandom6DigitNumber(): string {
+    return String(parseInt(Math.random().toString().substring(2, 8), 10));
+  }
+
+  private calculateExpirationTime(): Date {
+    return new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
+  }
+
+  private isExpired(expirationDate: Date): boolean {
+    return new Date(expirationDate) < new Date();
   }
 }
