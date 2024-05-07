@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { MailerModule } from "@nestjs-modules/mailer";
 import { UserModule } from "./modules/user/user.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
@@ -19,6 +20,9 @@ import { UserVerificationCodeModule } from "./modules/user-verification-code/use
 import { OrganizationsWorkspaceModule } from "./modules/organizations-workspace/organizations-workspace.module";
 import { UsersWorkspaceModule } from "./modules/users-workspace/users-workspace.module";
 import { QlikWorkspaceModule } from "./modules/qlik-workspace/qlik-workspace.module";
+import { EmailServerModule } from "./email-server/email-server.module";
+
+const { MAILER, MAILER_PASSWORD } = process.env;
 
 @Module({
   controllers: [],
@@ -37,6 +41,24 @@ import { QlikWorkspaceModule } from "./modules/qlik-workspace/qlik-workspace.mod
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
+    MailerModule.forRoot({
+      transport: {
+        host: "smtp.mailgun.org", // Host SMTP do seu provedor
+        secure: false, // Regras de segurança do serviço SMTP
+        port: 587, // Porta
+        auth: {
+          // Dados do usuário e senha
+          user: `${MAILER}`,
+          pass: `${MAILER_PASSWORD}`,
+        },
+        ignoreTLS: true,
+      },
+      defaults: {
+        // Configurações que podem ser padrões
+        from: '"',
+      },
+    }),
+    EmailServerModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRootAsync({
       useClass: ServeStaticOptionsService,
@@ -57,6 +79,5 @@ import { QlikWorkspaceModule } from "./modules/qlik-workspace/qlik-workspace.mod
       imports: [ConfigModule],
     }),
   ],
-  providers: [],
 })
 export class AppModule {}
