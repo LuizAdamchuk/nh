@@ -74,11 +74,6 @@ export class OrganizationService {
       data: {
         name: organization.name,
         slug: `${organization.name}-slug`,
-        organizationsWorkspaces: {
-          create: {
-            id: organization.id,
-          },
-        },
       },
     });
     console.log("🚀 ~ OrganizationService ~ workspace:", workspace);

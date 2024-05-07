@@ -11,7 +11,7 @@ export class EmailServerService {
     private readonly userVerificationCodeService: UserVerificationCodeService
   ) {}
 
-  async sendConfirmationEmail(email: string, confirmUrl: string) {
+  async sendConfirmationEmail(email: string) {
     const [user] = await this.userService.users({
       where: {
         email: {
@@ -23,10 +23,6 @@ export class EmailServerService {
     if (!user) throw new BadRequestException("No user founded.");
 
     const setExpireDate = new Date().setHours(new Date().getHours() + 2);
-    console.log(
-      "🚀 ~ EmailServerService ~ sendConfirmationEmail ~ setExpireDate:",
-      setExpireDate
-    );
 
     const userVericationCode =
       await this.userVerificationCodeService.createUserVerificationCode({
@@ -36,6 +32,7 @@ export class EmailServerService {
           userId: user.id,
         },
       });
+    const confirmUrl = `http://localhost:3000/api/mailer/validation/${user.id}/${userVericationCode.verificationCode}`;
 
     console.log(
       "🚀 ~ EmailServerService ~ sendConfirmationEmail ~ userVericationCode:",
@@ -50,7 +47,39 @@ export class EmailServerService {
     });
   }
 
-  async validateVerificationCode(id: string, code: string) {}
+  async validateVerificationCode(
+    userId: string,
+    code: string
+  ): Promise<boolean> {
+    const [userVerificationCode] =
+      await this.userVerificationCodeService.userVerificationCodes({
+        where: {
+          userId: userId,
+          verificationCode: code,
+        },
+      });
+    console.log(
+      "🚀 ~ EmailServerService ~ userVerificationCode:",
+      userVerificationCode
+    );
+
+    if (!userVerificationCode)
+      throw new BadRequestException("Validation Code error.");
+
+    if (new Date(userVerificationCode.expiresAt) < new Date())
+      throw new BadRequestException("Verification Code expired.");
+
+    await this.userService.updateUser({
+      where: {
+        id: userId,
+      },
+      data: {
+        status: true,
+      },
+    });
+
+    return true;
+  }
 
   // --- Private --- //
 

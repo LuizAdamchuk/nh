@@ -1,7 +1,7 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
 import { EmailServerService } from "./email-server.service";
-import { MailerInput } from "./dto";
+import { MailerInput, MailerValidation } from "./dto";
 
 @swagger.ApiTags("mailer")
 @swagger.ApiBearerAuth()
@@ -16,11 +16,23 @@ export class EmailServerController {
   ): Promise<any> {
     const { email } = data;
 
-    const confirmUrl = "http://example.com/confirm";
-    await this.emailServerService.sendConfirmationEmail(email, confirmUrl);
+    await this.emailServerService.sendConfirmationEmail(email);
 
     return response.status(200).json({
-      message: "Email enviado com sucesso!",
+      message: "Email enviado com sucesso.",
+    });
+  }
+
+  @common.Get("validation/:id/:code")
+  async validateVerificationCode(
+    @common.Param() data: MailerValidation,
+    @common.Res() response: any
+  ): Promise<any> {
+    const { id, code } = data;
+    await this.emailServerService.validateVerificationCode(id, code);
+
+    return response.status(200).json({
+      message: "User validated.",
     });
   }
 }
