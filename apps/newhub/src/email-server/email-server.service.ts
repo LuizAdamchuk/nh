@@ -22,10 +22,16 @@ export class EmailServerService {
 
     if (!user) throw new BadRequestException("No user founded.");
 
+    const setExpireDate = new Date().setHours(new Date().getHours() + 2);
+    console.log(
+      "🚀 ~ EmailServerService ~ sendConfirmationEmail ~ setExpireDate:",
+      setExpireDate
+    );
+
     const userVericationCode =
       await this.userVerificationCodeService.createUserVerificationCode({
         data: {
-          expiresAt: new Date(),
+          expiresAt: new Date(setExpireDate),
           verificationCode: String(this.generateRandom6DigitNumber()),
           userId: user.id,
         },
