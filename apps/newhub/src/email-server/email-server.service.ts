@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
 import { UserVerificationCodeService } from "src/modules/user-verification-code/user-verification-code.service";
 import { UserService } from "src/modules/user/user.service";
+const { MAILER_VALIDATION_URL } = process.env;
 
 @Injectable()
 export class EmailServerService {
@@ -32,12 +33,7 @@ export class EmailServerService {
           userId: user.id,
         },
       });
-    const confirmUrl = `http://localhost:3000/api/mailer/validation/${user.id}/${userVericationCode.verificationCode}`;
-
-    console.log(
-      "🚀 ~ EmailServerService ~ sendConfirmationEmail ~ userVericationCode:",
-      userVericationCode
-    );
+    const confirmUrl = `${MAILER_VALIDATION_URL}/${user.id}/${userVericationCode.verificationCode}`;
 
     await this.mailerService.sendMail({
       to: email,
@@ -47,10 +43,7 @@ export class EmailServerService {
     });
   }
 
-  async validateVerificationCode(
-    userId: string,
-    code: string
-  ): Promise<boolean> {
+  async validateVerificationCode(userId: string, code: string): Promise<void> {
     const [userVerificationCode] =
       await this.userVerificationCodeService.userVerificationCodes({
         where: {
@@ -58,16 +51,20 @@ export class EmailServerService {
           verificationCode: code,
         },
       });
-    console.log(
-      "🚀 ~ EmailServerService ~ userVerificationCode:",
-      userVerificationCode
-    );
+
+    const user = await this.userService.user({
+      where: {
+        id: userId,
+      },
+    });
 
     if (!userVerificationCode)
-      throw new BadRequestException("Validation Code error.");
+      throw new BadRequestException("Verification Code error.");
 
     if (new Date(userVerificationCode.expiresAt) < new Date())
       throw new BadRequestException("Verification Code expired.");
+
+    if (user?.status) throw new BadRequestException("User already validated.");
 
     await this.userService.updateUser({
       where: {
@@ -77,8 +74,6 @@ export class EmailServerService {
         status: true,
       },
     });
-
-    return true;
   }
 
   // --- Private --- //
