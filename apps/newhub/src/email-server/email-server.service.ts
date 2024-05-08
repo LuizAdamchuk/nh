@@ -2,14 +2,24 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
 import { UserVerificationCodeService } from "src/modules/user-verification-code/user-verification-code.service";
 import { UserService } from "src/modules/user/user.service";
-import { confirmUrl, getEmailValidationConfig } from "./inputs";
+import {
+  confirmUrl,
+  getEmailRecoverPasswordConfig,
+  getEmailValidationConfig,
+  recoverPasswordUrl,
+} from "./inputs";
+import { UserRecoverPasswordService } from "src/modules/user-recover-password/user-recover-password.service";
+import * as crypto from "crypto";
+import { UserVerificationCodeValidations } from "./validations/VerificationCode";
 
 @Injectable()
 export class EmailServerService {
   constructor(
     private mailerService: MailerService,
     private userService: UserService,
-    private readonly userVerificationCodeService: UserVerificationCodeService
+    private readonly userVerificationCodeService: UserVerificationCodeService,
+    private readonly userRecoverPasswordService: UserRecoverPasswordService,
+    private readonly userVerificationCodeValidations: UserVerificationCodeValidations
   ) {}
 
   async sendConfirmationEmail(email: string) {
@@ -21,12 +31,12 @@ export class EmailServerService {
       },
     });
 
-    if (!user) throw new BadRequestException("No user founded.");
+    if (!user) throw new BadRequestException("User not founded.");
 
     const userVericationCode =
       await this.userVerificationCodeService.createUserVerificationCode({
         data: {
-          expiresAt: this.calculateExpirationTime(),
+          expiresAt: this.calculateExpirationTime(2),
           verificationCode: this.generateRandom6DigitNumber(),
           userId: user.id,
         },
@@ -41,6 +51,14 @@ export class EmailServerService {
   }
 
   async validateVerificationCode(userId: string, code: string): Promise<void> {
+    const user = await this.userService.user({
+      where: {
+        id: userId,
+      },
+    });
+
+    this.userVerificationCodeValidations.verifyUserExistence(user);
+
     const [userVerificationCode] =
       await this.userVerificationCodeService.userVerificationCodes({
         where: {
@@ -49,13 +67,9 @@ export class EmailServerService {
         },
       });
 
-    const user = await this.userService.user({
-      where: {
-        id: userId,
-      },
-    });
-
-    this.validations(userVerificationCode, user);
+    this.userVerificationCodeValidations.verifyVerificationCode(
+      userVerificationCode
+    );
 
     await this.userService.updateUser({
       where: {
@@ -67,27 +81,43 @@ export class EmailServerService {
     });
   }
 
-  // --- Private --- //
+  async sendRecoverPasswordEmail(email: string): Promise<void> {
+    const [user] = await this.userService.users({
+      where: {
+        email: {
+          equals: email,
+        },
+      },
+    });
 
-  private validations(userVerificationCode: any, user: any) {
-    if (!userVerificationCode)
-      throw new BadRequestException("Verification Code error.");
+    if (!user) throw new BadRequestException("User not founded.");
 
-    if (this.isExpired(userVerificationCode.expiresAt))
-      throw new BadRequestException("Verification Code expired.");
+    const token = this.generateRecoverPasswordToken();
 
-    if (user?.status) throw new BadRequestException("User already validated.");
+    await this.userRecoverPasswordService.createUserRecoverPassword({
+      data: {
+        token,
+        expiresAt: this.calculateExpirationTime(1),
+        userId: user.id,
+      },
+    });
+
+    await this.mailerService.sendMail(
+      getEmailRecoverPasswordConfig(email, recoverPasswordUrl(email, token))
+    );
   }
+
+  // --- Private --- //
 
   private generateRandom6DigitNumber(): string {
     return String(parseInt(Math.random().toString().substring(2, 8), 10));
   }
 
-  private calculateExpirationTime(): Date {
-    return new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours from now
+  private calculateExpirationTime(timeInHour: number): Date {
+    return new Date(Date.now() + timeInHour * 60 * 60 * 1000);
   }
 
-  private isExpired(expirationDate: Date): boolean {
-    return new Date(expirationDate) < new Date();
+  private generateRecoverPasswordToken(): string {
+    return crypto.randomBytes(20).toString("hex");
   }
 }

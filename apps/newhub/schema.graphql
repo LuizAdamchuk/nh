@@ -118,7 +118,6 @@ input UserUpdateInput {
   email: String
   firstName: String
   lastName: String
-  password: String
   roles: JSON
   username: String
 }

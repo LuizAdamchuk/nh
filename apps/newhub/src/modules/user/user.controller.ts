@@ -10,6 +10,8 @@ import {
   User,
   UserCreateInput,
   UserFindManyArgs,
+  UserResetPasswordBody,
+  UserResetPasswordParams,
   UserUpdateInput,
   UserWhereUniqueInput,
 } from "./dto";
@@ -162,6 +164,31 @@ export class UserController {
           updatedAt: true,
           username: true,
         },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new errors.NotFoundException(
+          `No resource was found for ${JSON.stringify(params)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @common.Patch("/reset-password/:email/:token")
+  @swagger.ApiOkResponse({ type: User })
+  @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
+  async resetPassword(
+    @common.Param() params: UserResetPasswordParams,
+    @common.Body() data: UserResetPasswordBody
+  ): Promise<User | null> {
+    try {
+      return await this.service.resetPasswordUser({
+        where: params,
+        data: data,
       });
     } catch (error) {
       if (isRecordNotFoundError(error)) {

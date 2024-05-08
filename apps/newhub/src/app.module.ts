@@ -21,6 +21,7 @@ import { OrganizationsWorkspaceModule } from "./modules/organizations-workspace/
 import { UsersWorkspaceModule } from "./modules/users-workspace/users-workspace.module";
 import { QlikWorkspaceModule } from "./modules/qlik-workspace/qlik-workspace.module";
 import { EmailServerModule } from "./email-server/email-server.module";
+import { UserRecoverPasswordModule } from "./modules/user-recover-password/user-recover-password.module";
 
 const { MAILER, MAILER_PASSWORD } = process.env;
 
@@ -35,6 +36,7 @@ const { MAILER, MAILER_PASSWORD } = process.env;
     QlikIntegrationModule,
     UserConfigModule,
     UserVerificationCodeModule,
+    UserRecoverPasswordModule,
     OrganizationsWorkspaceModule,
     UsersWorkspaceModule,
     QlikWorkspaceModule,

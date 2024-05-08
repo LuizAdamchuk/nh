@@ -11,3 +11,5 @@ export * from "./UserOrderByInput";
 export * from "./UserUpdateInput";
 export * from "./UserWhereInput";
 export * from "./UserWhereUniqueInput";
+export * from "./UserResetPasswordBody";
+export * from "./UserResetPasswordParams";
