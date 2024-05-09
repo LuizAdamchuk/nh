@@ -1,5 +1,7 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+
 import { isRecordNotFoundError } from "../../prisma.util";
 import * as errors from "../../errors";
 import { Request } from "express";
@@ -19,9 +21,13 @@ import {
   OrganizationsWorkspace,
   OrganizationsWorkspaceWhereUniqueInput,
 } from "../organizations-workspace/dto";
+import { UserData } from "src/auth/userData.decorator";
+import { User } from "../user/dto";
+import { BadRequestException } from "@nestjs/common";
 
 @swagger.ApiTags("organization")
 @swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
 @common.Controller("organization")
 export class OrganizationController {
   constructor(protected readonly service: OrganizationService) {}
@@ -31,8 +37,12 @@ export class OrganizationController {
     type: errors.ForbiddenException,
   })
   async createOrganization(
-    @common.Body() data: OrganizationCreateInput
+    @common.Body() data: OrganizationCreateInput,
+    @UserData() user: any
   ): Promise<Organization> {
+    if (!user.status)
+      throw new BadRequestException("You must validate your user.");
+
     return await this.service.createOrganization({
       data: data,
       select: {
@@ -55,6 +65,7 @@ export class OrganizationController {
   })
   async organizations(@common.Req() request: Request): Promise<Organization[]> {
     const args = plainToClass(OrganizationFindManyArgs, request.query);
+
     return this.service.organizations({
       ...args,
       select: {
@@ -209,8 +220,11 @@ export class OrganizationController {
     type: errors.ForbiddenException,
   })
   async connectOrganizationsWorkspaces(
-    @common.Body() data: OrganizationCreateInput
+    @common.Body() data: OrganizationCreateInput,
+    @UserData() user: any
   ): Promise<Organization> {
+    if (!user.status)
+      throw new BadRequestException("You must validate your user.");
     return await this.service.createOrganizationWorkspaceAndLink({
       data: data,
       select: {

@@ -45,15 +45,15 @@ export class EmailServerService {
     await this.mailerService.sendMail(
       getEmailValidationConfig(
         email,
-        confirmUrl(user.id, userVericationCode.verificationCode)
+        confirmUrl(user.email, userVericationCode.verificationCode)
       )
     );
   }
 
-  async validateVerificationCode(userId: string, code: string): Promise<void> {
+  async validateVerificationCode(email: string, code: string): Promise<void> {
     const user = await this.userService.user({
       where: {
-        id: userId,
+        email: email,
       },
     });
 
@@ -62,7 +62,7 @@ export class EmailServerService {
     const [userVerificationCode] =
       await this.userVerificationCodeService.userVerificationCodes({
         where: {
-          userId: userId,
+          userId: user?.id,
           verificationCode: code,
         },
       });
@@ -73,7 +73,7 @@ export class EmailServerService {
 
     await this.userService.updateUser({
       where: {
-        id: userId,
+        id: user?.id,
       },
       data: {
         status: true,

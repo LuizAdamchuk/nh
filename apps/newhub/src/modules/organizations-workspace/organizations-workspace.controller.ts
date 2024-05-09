@@ -1,5 +1,7 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+
 import { isRecordNotFoundError } from "../../prisma.util";
 import * as errors from "../../errors";
 import { Request } from "express";
@@ -17,6 +19,7 @@ import {
 
 @swagger.ApiTags("organizationsWorkspace")
 @swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
 @common.Controller("organizationsWorkspace")
 export class OrganizationsWorkspaceController {
   constructor(protected readonly service: OrganizationsWorkspaceService) {}

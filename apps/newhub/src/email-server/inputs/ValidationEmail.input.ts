@@ -1,7 +1,7 @@
 const { MAILER_VALIDATION_URL } = process.env;
 
-export const confirmUrl = (userId: string, code: string) => {
-  return `${MAILER_VALIDATION_URL}/${userId}/${code}`;
+export const confirmUrl = (email: string | null, code: string) => {
+  return `${MAILER_VALIDATION_URL}/${email}/${code}`;
 };
 
 export const getEmailValidationConfig = (

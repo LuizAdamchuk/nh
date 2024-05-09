@@ -1,5 +1,7 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+
 import { isRecordNotFoundError } from "../../prisma.util";
 import * as errors from "../../errors";
 import { Request } from "express";
@@ -17,11 +19,12 @@ import {
 } from "./dto";
 
 @swagger.ApiTags("users")
-@swagger.ApiBearerAuth()
 @common.Controller("users")
 export class UserController {
   constructor(protected readonly service: UserService) {}
   @common.Post()
+  @common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
+  @swagger.ApiBearerAuth()
   @swagger.ApiCreatedResponse({ type: User })
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
@@ -43,6 +46,8 @@ export class UserController {
   }
 
   @common.Get()
+  @common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
+  @swagger.ApiBearerAuth()
   @swagger.ApiOkResponse({ type: [User] })
   @ApiNestedQuery(UserFindManyArgs)
   @swagger.ApiForbiddenResponse({
@@ -72,6 +77,8 @@ export class UserController {
   }
 
   @common.Get("/:id")
+  @common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
+  @swagger.ApiBearerAuth()
   @swagger.ApiOkResponse({ type: User })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
   @swagger.ApiForbiddenResponse({
@@ -108,6 +115,8 @@ export class UserController {
   }
 
   @common.Patch("/:id")
+  @common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
+  @swagger.ApiBearerAuth()
   @swagger.ApiOkResponse({ type: User })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
   @swagger.ApiForbiddenResponse({
@@ -143,6 +152,8 @@ export class UserController {
   }
 
   @common.Delete("/:id")
+  @common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
+  @swagger.ApiBearerAuth()
   @swagger.ApiOkResponse({ type: User })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
   @swagger.ApiForbiddenResponse({

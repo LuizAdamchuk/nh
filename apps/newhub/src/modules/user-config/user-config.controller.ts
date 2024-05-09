@@ -1,5 +1,7 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+
 import { isRecordNotFoundError } from "../../prisma.util";
 import * as errors from "../../errors";
 import { Request } from "express";
@@ -18,6 +20,7 @@ import {
 
 @swagger.ApiTags("userConfig")
 @swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
 @common.Controller("userConfig")
 export class UserConfigController {
   constructor(protected readonly service: UserConfigService) {}

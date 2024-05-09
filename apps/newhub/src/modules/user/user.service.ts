@@ -95,18 +95,14 @@ export class UserService {
     this.resetPasswordValidations.verifyRecoverPasswordToken(
       userRecoverPassword
     );
+    console.log("🚀 ~ UserService ~ data.newPasswor:", data.newPassword);
 
-    return this.updateUser({
+    return await this.updateUser({
       where: {
         id: user.id,
       },
       data: {
-        password:
-          args.data.newPassword &&
-          (await transformStringFieldUpdateInput(
-            args.data.newPassword,
-            (password) => this.passwordService.hash(password)
-          )),
+        password: data.newPassword,
       },
       select: {
         createdAt: true,

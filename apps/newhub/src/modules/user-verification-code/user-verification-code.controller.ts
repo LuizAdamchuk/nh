@@ -1,15 +1,13 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+
 import { isRecordNotFoundError } from "../../prisma.util";
 import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
-import * as nestAccessControl from "nest-access-control";
-import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { UserVerificationCodeService } from "./user-verification-code.service";
-import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
-import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import {
   UserVerificationCodeCreateInput,
   UserVerificationCode,
@@ -20,6 +18,7 @@ import {
 
 @swagger.ApiTags("userVerificationCode")
 @swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
 @common.Controller("userVerificationCode")
 export class UserVerificationCodeController {
   constructor(protected readonly service: UserVerificationCodeService) {}

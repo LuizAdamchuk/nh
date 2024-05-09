@@ -10,6 +10,7 @@ export class UserVerificationCodeValidations {
   // TODO: [1] Colocar em algum service global
   verifyUserExistence(user: PrismaUser | null) {
     if (!user) throw new BadRequestException("User not founded.");
+    if (user.status) throw new BadRequestException("User already validated.");
   }
 
   verifyVerificationCode(userVerificationCode: PrismaUserVerificationCode) {

@@ -22,6 +22,8 @@ export class AuthService {
     });
     if (user && (await this.passwordService.compare(password, user.password))) {
       const { id, roles } = user;
+      console.log("🚀 ~ AuthService ~ user:", user);
+
       const roleList = roles as string[];
       return { id, username, roles: roleList };
     }
