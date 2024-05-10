@@ -1,6 +1,6 @@
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString, IsOptional } from "class-validator";
+import { IsDate, IsString, IsOptional, IsBoolean } from "class-validator";
 import { Type } from "class-transformer";
 import { IsJSONValue } from "../../../validators";
 import { GraphQLJSON } from "graphql-type-json";
@@ -26,6 +26,17 @@ class User {
     nullable: true,
   })
   email!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  status!: string | null;
 
   @ApiProperty({
     required: false,

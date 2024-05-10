@@ -7,7 +7,11 @@ import { UserRecoverPasswordModule } from "../user-recover-password/user-recover
 import { UserResetPasswordValidations } from "./validations/UserResetPassword";
 
 @Module({
-  imports: [forwardRef(() => AuthModule), UserRecoverPasswordModule],
+  imports: [
+    forwardRef(() => AuthModule),
+    UserRecoverPasswordModule,
+    UserRecoverPasswordModule,
+  ],
   controllers: [UserController],
   providers: [UserService, UserResolver, UserResetPasswordValidations],
   exports: [UserService],

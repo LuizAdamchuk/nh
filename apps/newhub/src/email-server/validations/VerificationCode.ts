@@ -1,6 +1,7 @@
 import {
   UserVerificationCode as PrismaUserVerificationCode,
   User as PrismaUser,
+  UserStatus as UserStatusEnum,
 } from "@prisma/client";
 
 import { BadRequestException, Injectable } from "@nestjs/common";
@@ -10,7 +11,8 @@ export class UserVerificationCodeValidations {
   // TODO: [1] Colocar em algum service global
   verifyUserExistence(user: PrismaUser | null) {
     if (!user) throw new BadRequestException("User not founded.");
-    if (user.status) throw new BadRequestException("User already validated.");
+    if (user.status === UserStatusEnum.active)
+      throw new BadRequestException("User already validated.");
   }
 
   verifyVerificationCode(userVerificationCode: PrismaUserVerificationCode) {

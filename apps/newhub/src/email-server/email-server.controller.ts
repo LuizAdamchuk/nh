@@ -22,13 +22,13 @@ export class EmailServerController {
     });
   }
 
-  @common.Get("validation/:id/:code")
+  @common.Get("validation/:email/:code")
   async validateVerificationCode(
     @common.Param() data: MailerValidation,
     @common.Res() response: any
   ): Promise<any> {
-    const { id, code } = data;
-    await this.emailServerService.validateVerificationCode(id, code);
+    const { email, code } = data;
+    await this.emailServerService.validateVerificationCode(email, code);
 
     return response.status(200).json({
       message: "User validated.",

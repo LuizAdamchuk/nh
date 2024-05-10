@@ -11,7 +11,7 @@ class MailerValidation {
   @Field(() => String, {
     nullable: false,
   })
-  id!: string;
+  email!: string;
 
   @ApiProperty({
     required: true,

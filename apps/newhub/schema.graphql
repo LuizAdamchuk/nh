@@ -82,6 +82,7 @@ type User {
   id: String!
   lastName: String
   roles: JSON!
+  status: String
   updatedAt: DateTime!
   username: String!
 }

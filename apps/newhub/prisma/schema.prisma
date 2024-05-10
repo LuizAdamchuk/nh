@@ -7,6 +7,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum UserStatus {
+  inactive
+  active
+  pendingEmailValidation
+  pendingOrganization
+  pendingBIIntegration
+  pendingUserConfigs
+}
+
 model User {
   createdAt             DateTime               @default(now())
   email                 String?                @unique
@@ -15,13 +24,20 @@ model User {
   lastName              String?
   password              String
   roles                 Json
-  status                Boolean?
+  status                UserStatus?            @default(inactive)
   updatedAt             DateTime               @updatedAt
   userConfigs           UserConfig[]
   username              String                 @unique
   usersWorkspaces       UsersWorkspace[]
   userVerificationCodes UserVerificationCode[]
   userRecoverPassword   UserRecoverPassword[]
+}
+
+enum OrganizationFieldType {
+  financialService
+  health
+  ong
+  default
 }
 
 model Organization {
@@ -31,6 +47,7 @@ model Organization {
   name                    String
   organizationsWorkspaces OrganizationsWorkspace[]
   owner                   String?
+  field                   OrganizationFieldType    @default(default)
   slug                    String                   @unique
   updatedAt               DateTime                 @updatedAt
 }

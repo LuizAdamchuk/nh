@@ -1,13 +1,15 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import { UserStatus as UserStatusEnum } from "@prisma/client";
 import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+import * as nestAccessControl from "nest-access-control";
+import * as errors from "../../errors";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 
 import { isRecordNotFoundError } from "../../prisma.util";
-import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
-
 import { OrganizationService } from "./organization.service";
 import {
   OrganizationCreateInput,
@@ -24,26 +26,38 @@ import {
 import { UserData } from "src/auth/userData.decorator";
 import { User } from "../user/dto";
 import { BadRequestException } from "@nestjs/common";
+import { UserService } from "../user/user.service";
 
 @swagger.ApiTags("organization")
 @swagger.ApiBearerAuth()
-@common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 @common.Controller("organization")
 export class OrganizationController {
-  constructor(protected readonly service: OrganizationService) {}
+  constructor(
+    protected readonly service: OrganizationService,
+    @nestAccessControl.InjectRolesBuilder()
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder,
+    protected readonly userService: UserService
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Organization })
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
+  @nestAccessControl.UseRoles({
+    resource: "Organization",
+    action: "create",
+    possession: "any",
+  })
   async createOrganization(
     @common.Body() data: OrganizationCreateInput,
-    @UserData() user: any
+    @UserData() user: User
   ): Promise<Organization> {
     if (!user.status)
       throw new BadRequestException("You must validate your user.");
 
-    return await this.service.createOrganization({
+    const organization = await this.service.createOrganization({
       data: data,
       select: {
         createdAt: true,
@@ -55,6 +69,17 @@ export class OrganizationController {
         updatedAt: true,
       },
     });
+
+    await this.userService.updateUser({
+      where: {
+        id: user.id,
+      },
+      data: {
+        status: UserStatusEnum.pendingBIIntegration,
+      },
+    });
+
+    return organization;
   }
 
   @common.Get()
@@ -221,7 +246,7 @@ export class OrganizationController {
   })
   async connectOrganizationsWorkspaces(
     @common.Body() data: OrganizationCreateInput,
-    @UserData() user: any
+    @UserData() user: User
   ): Promise<Organization> {
     if (!user.status)
       throw new BadRequestException("You must validate your user.");

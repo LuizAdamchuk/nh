@@ -12,6 +12,7 @@ export class UserService {
   constructor(
     protected readonly prisma: PrismaService,
     protected readonly passwordService: PasswordService,
+    protected readonly userRecoverPassword: UserRecoverPasswordService,
     protected readonly userRecoverPasswordService: UserRecoverPasswordService,
     protected readonly resetPasswordValidations: UserResetPasswordValidations
   ) {}
@@ -95,7 +96,13 @@ export class UserService {
     this.resetPasswordValidations.verifyRecoverPasswordToken(
       userRecoverPassword
     );
-    console.log("🚀 ~ UserService ~ data.newPasswor:", data.newPassword);
+
+    await this.userRecoverPasswordService.deleteUserRecoverPassword({
+      where: {
+        id: userRecoverPassword.id,
+        token: userRecoverPassword.token,
+      },
+    });
 
     return await this.updateUser({
       where: {
@@ -115,10 +122,5 @@ export class UserService {
         username: true,
       },
     });
-  }
-
-  // ---- Private ---- ///
-  private isExpired(expirationDate: Date): boolean {
-    return new Date(expirationDate) < new Date();
   }
 }
