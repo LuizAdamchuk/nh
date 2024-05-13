@@ -10,7 +10,6 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post("login")
   async login(@Body() body: Credentials): Promise<UserInfo> {
-    console.log("🚀 ~ AuthController ~ login ~ body:", body);
     return this.authService.login(body);
   }
 }

@@ -25,6 +25,7 @@ export class OrganizationService {
   async organizations<T extends Prisma.OrganizationFindManyArgs>(
     args: Prisma.SelectSubset<T, Prisma.OrganizationFindManyArgs>
   ): Promise<PrismaOrganization[]> {
+    console.log("🚀 ~ OrganizationService ~ args:", args);
     return this.prisma.organization.findMany<Prisma.OrganizationFindManyArgs>(
       args
     );

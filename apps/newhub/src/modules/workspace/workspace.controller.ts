@@ -1,9 +1,11 @@
 import * as common from "@nestjs/common";
 import * as swagger from "@nestjs/swagger";
+import * as errors from "../../errors";
 import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
+import * as nestAccessControl from "nest-access-control";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 
 import { isRecordNotFoundError } from "../../prisma.util";
-import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
@@ -35,12 +37,22 @@ import {
 
 @swagger.ApiTags("workspace")
 @swagger.ApiBearerAuth()
-@common.UseGuards(defaultAuthGuard.DefaultAuthGuard)
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 @common.Controller("workspace")
 export class WorkspaceController {
-  constructor(protected readonly service: WorkspaceService) {}
+  constructor(
+    protected readonly service: WorkspaceService,
+    @nestAccessControl.InjectRolesBuilder()
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Workspace })
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "create",
+    possession: "any",
+  })
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
@@ -58,10 +70,15 @@ export class WorkspaceController {
       },
     });
   }
-
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Workspace] })
   @ApiNestedQuery(WorkspaceFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "read",
+    possession: "any",
+  })
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
@@ -79,9 +96,15 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Workspace })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "read",
+    possession: "own",
+  })
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
@@ -106,9 +129,15 @@ export class WorkspaceController {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Workspace })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
@@ -138,9 +167,15 @@ export class WorkspaceController {
     }
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Workspace })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "delete",
+    possession: "any",
+  })
   @swagger.ApiForbiddenResponse({
     type: errors.ForbiddenException,
   })
@@ -168,8 +203,14 @@ export class WorkspaceController {
     }
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Get("/:id/organizationsWorkspaces")
   @ApiNestedQuery(OrganizationsWorkspaceFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "OrganizationsWorkspace",
+    action: "read",
+    possession: "any",
+  })
   async findOrganizationsWorkspaces(
     @common.Req() request: Request,
     @common.Param() params: WorkspaceWhereUniqueInput
@@ -207,7 +248,13 @@ export class WorkspaceController {
     return results;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post("/:id/organizationsWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async connectOrganizationsWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: OrganizationsWorkspaceWhereUniqueInput[]
@@ -223,8 +270,13 @@ export class WorkspaceController {
       select: { id: true },
     });
   }
-
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id/organizationsWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async updateOrganizationsWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: OrganizationsWorkspaceWhereUniqueInput[]
@@ -241,7 +293,13 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Delete("/:id/organizationsWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async disconnectOrganizationsWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: OrganizationsWorkspaceWhereUniqueInput[]
@@ -258,7 +316,13 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Get("/:id/qlikWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "QlikWorkspace",
+    action: "read",
+    possession: "any",
+  })
   @ApiNestedQuery(QlikWorkspaceFindManyArgs)
   async findQlikWorkspaces(
     @common.Req() request: Request,
@@ -293,8 +357,13 @@ export class WorkspaceController {
     }
     return results;
   }
-
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post("/:id/qlikWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async connectQlikWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: QlikWorkspaceWhereUniqueInput[]
@@ -311,7 +380,13 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id/qlikWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async updateQlikWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: QlikWorkspaceWhereUniqueInput[]
@@ -328,7 +403,13 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Delete("/:id/qlikWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async disconnectQlikWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: QlikWorkspaceWhereUniqueInput[]
@@ -345,7 +426,13 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Get("/:id/usersWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "UsersWorkspace",
+    action: "read",
+    possession: "any",
+  })
   @ApiNestedQuery(UsersWorkspaceFindManyArgs)
   async findUsersWorkspaces(
     @common.Req() request: Request,
@@ -379,8 +466,13 @@ export class WorkspaceController {
     }
     return results;
   }
-
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post("/:id/usersWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async connectUsersWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: UsersWorkspaceWhereUniqueInput[]
@@ -397,7 +489,13 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id/usersWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async updateUsersWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: UsersWorkspaceWhereUniqueInput[]
@@ -414,7 +512,13 @@ export class WorkspaceController {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Delete("/:id/usersWorkspaces")
+  @nestAccessControl.UseRoles({
+    resource: "Workspace",
+    action: "update",
+    possession: "any",
+  })
   async disconnectUsersWorkspaces(
     @common.Param() params: WorkspaceWhereUniqueInput,
     @common.Body() body: UsersWorkspaceWhereUniqueInput[]

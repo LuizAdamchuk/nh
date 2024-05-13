@@ -69,7 +69,11 @@ export class UserController {
         usersWorkspaces: {
           select: {
             id: true,
-            workspace: true,
+            workspace: {
+              select: {
+                organizationsWorkspaces: true,
+              },
+            },
           },
         },
       },
@@ -101,7 +105,11 @@ export class UserController {
         usersWorkspaces: {
           select: {
             id: true,
-            workspace: true,
+            workspace: {
+              select: {
+                organizationsWorkspaces: true,
+              },
+            },
           },
         },
       },
